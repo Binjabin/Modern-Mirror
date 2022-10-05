@@ -33,7 +33,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - LiquidFill: 0.45
+    - LiquidFill: 0.6
     - Vector1_69DC66C: 30
     - Vector1_7500305: 0.01
     - Vector1_A0C096A0: 0.5
