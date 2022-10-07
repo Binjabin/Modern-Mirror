@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.XR.Interaction.Toolkit;
 
 public class Basketball : MonoBehaviour
 {
@@ -10,9 +11,13 @@ public class Basketball : MonoBehaviour
     bool isHeld;
     float timeSinceHeld;
     bool handNearby;
+    GameObject releasedByObject;
+    XRDirectInteractor[] hands;
 
     void Start()
     {
+        hands = FindObjectsOfType<XRDirectInteractor>();
+        handNearby = false;
         isHeld = false;
         SetLayer(canTouchHandsLayer);
     }
@@ -30,6 +35,8 @@ public class Basketball : MonoBehaviour
         isHeld = true;
         handNearby = true;
         SetLayer(cannotTouchHandsLayer);
+        Debug.Log("picked up" + gameObject);
+        releasedByObject = FindHoldingHand();
     }
 
     void SetLayer(LayerMask layer)
@@ -55,13 +62,47 @@ public class Basketball : MonoBehaviour
                 //}
             }
         }
+
     }
 
 
 
-    public void HandExit()
+    public void HandExit(GameObject hand)
     {
-        handNearby = false;
-        Debug.Log("hand is no longer near me!");
+        if(!isHeld)
+        {
+            if(releasedByObject)
+            {
+                handNearby = false;
+                Debug.Log("hand is no longer near " + gameObject);
+            }
+            
+        }
+        Debug.Log("hand left proximity but is being held");
+    }
+
+    GameObject FindHoldingHand()
+    {
+        GameObject holdingHand = null;
+        if(isHeld)
+        {
+            float minDistance = 1000000f;
+            for (int i = 0; i < hands.Length; i++)
+            {
+                var dist = Vector3.Distance(transform.position, hands[i].transform.position);
+                if(dist < minDistance)
+                {
+                    minDistance = dist;
+                    holdingHand = hands[i].gameObject;
+                }
+            }
+            return holdingHand;
+        }
+        else
+        {
+            return null;
+        }
+        
+        
     }
 }
