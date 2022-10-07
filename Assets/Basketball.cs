@@ -71,14 +71,14 @@ public class Basketball : MonoBehaviour
     {
         if(!isHeld)
         {
-            if(releasedByObject)
+            if(releasedByObject == hand)
             {
                 handNearby = false;
                 Debug.Log("hand is no longer near " + gameObject);
             }
-            
+            Debug.Log("hand left proximity but is being held by other hand");
         }
-        Debug.Log("hand left proximity but is being held");
+        Debug.Log("hand left proximity but is being held by other hand");
     }
 
     GameObject FindHoldingHand()
