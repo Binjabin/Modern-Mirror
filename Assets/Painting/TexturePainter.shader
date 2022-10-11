@@ -23,6 +23,7 @@
             float _Strength;
             float4 _PainterColor;
             float _PrepareUV;
+            
 
             struct appdata{
                 float4 vertex : POSITION;
@@ -58,7 +59,15 @@
                 float4 col = tex2D(_MainTex, i.uv);
                 float f = mask(i.worldPos, _PainterPosition, _Radius, _Hardness);
                 float edge = f * _Strength;
-                return lerp(col, _PainterColor, edge);
+                
+
+                float4 newCol = lerp(col, _PainterColor, edge);
+                newCol.a = max(newCol.a, col.a);
+                float fac = (col.a < newCol.a);
+                float4 outCol = lerp(col, newCol, 0.5);
+
+                
+                return outCol;
             }
             ENDCG
         }

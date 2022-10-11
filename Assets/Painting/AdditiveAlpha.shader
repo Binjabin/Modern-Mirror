@@ -6,7 +6,7 @@ Shader "TNTC/AdditiveAlpha"{
 
     SubShader{
         Tags { "RenderType"= "Opaque" }
-        Blend One One
+        //Blend One One
         LOD 100
 
         Pass{
@@ -31,7 +31,7 @@ Shader "TNTC/AdditiveAlpha"{
             float4 _MainTex_ST;
             float4 _MainTex_TexelSize;
             float _OffsetUV;
-            sampler2D _UVIslands;
+            sampler2D _AlphaBlend;
 
             v2f vert (appdata v){
                 v2f o;
@@ -43,6 +43,8 @@ Shader "TNTC/AdditiveAlpha"{
             fixed4 frag (v2f i) : SV_Target{
 				float2 uv = i.uv;
 				float4 color = tex2D(_MainTex, uv);
+                //float4 otherColor = tex2D(_AlphaBlend, uv);
+                color.a = max(color.a, 0.5);
 				return color;
             }
             ENDCG
