@@ -9,6 +9,7 @@ public class Paintable : MonoBehaviour {
     RenderTexture uvIslandsRenderTexture;
     RenderTexture maskRenderTexture;
     RenderTexture supportTexture;
+    RenderTexture blendTexture;
     
     Renderer rend;
 
@@ -17,8 +18,10 @@ public class Paintable : MonoBehaviour {
     public RenderTexture getMask() => maskRenderTexture;
     public RenderTexture getUVIslands() => uvIslandsRenderTexture;
     public RenderTexture getExtend() => extendIslandsRenderTexture;
+
     public RenderTexture getSupport() => supportTexture;
     public Renderer getRenderer() => rend;
+    public RenderTexture getBlend() => blendTexture; 
 
     void Start() {
         maskRenderTexture = new RenderTexture(TEXTURE_SIZE, TEXTURE_SIZE, 0);
@@ -26,6 +29,9 @@ public class Paintable : MonoBehaviour {
 
         extendIslandsRenderTexture = new RenderTexture(TEXTURE_SIZE, TEXTURE_SIZE, 0);
         extendIslandsRenderTexture.filterMode = FilterMode.Bilinear;
+
+        blendTexture = new RenderTexture(TEXTURE_SIZE, TEXTURE_SIZE, 0);
+        blendTexture.filterMode = FilterMode.Bilinear;
 
         uvIslandsRenderTexture = new RenderTexture(TEXTURE_SIZE, TEXTURE_SIZE, 0);
         uvIslandsRenderTexture.filterMode = FilterMode.Bilinear;
@@ -44,5 +50,6 @@ public class Paintable : MonoBehaviour {
         uvIslandsRenderTexture.Release();
         extendIslandsRenderTexture.Release();
         supportTexture.Release();
+        blendTexture.Release();
     }
 }

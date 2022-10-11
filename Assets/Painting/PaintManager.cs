@@ -5,6 +5,8 @@ public class PaintManager : Singleton<PaintManager>{
 
     public Shader texturePaint;
     public Shader extendIslands;
+    public Shader alphaBlend;
+
 
     int prepareUVID = Shader.PropertyToID("_PrepareUV");
     int positionID = Shader.PropertyToID("_PainterPosition");
@@ -16,9 +18,11 @@ public class PaintManager : Singleton<PaintManager>{
     int textureID = Shader.PropertyToID("_MainTex");
     int uvOffsetID = Shader.PropertyToID("_OffsetUV");
     int uvIslandsID = Shader.PropertyToID("_UVIslands");
+    int alphaBlendID = Shader.PropertyToID("_AlphaBlend");
 
     Material paintMaterial;
     Material extendMaterial;
+    Material blendMaterial;
 
     CommandBuffer command;
 
@@ -27,6 +31,7 @@ public class PaintManager : Singleton<PaintManager>{
         
         paintMaterial = new Material(texturePaint);
         extendMaterial = new Material(extendIslands);
+        blendMaterial = new Material(alphaBlend);
         command = new CommandBuffer();
         command.name = "CommmandBuffer - " + gameObject.name;
     }
@@ -36,6 +41,7 @@ public class PaintManager : Singleton<PaintManager>{
         RenderTexture uvIslands = paintable.getUVIslands();
         RenderTexture extend = paintable.getExtend();
         RenderTexture support = paintable.getSupport();
+        RenderTexture blend = paintable.getBlend();
         Renderer rend = paintable.getRenderer();
 
         command.SetRenderTarget(mask);
@@ -56,6 +62,7 @@ public class PaintManager : Singleton<PaintManager>{
         RenderTexture uvIslands = paintable.getUVIslands();
         RenderTexture extend = paintable.getExtend();
         RenderTexture support = paintable.getSupport();
+        RenderTexture blend = paintable.getBlend();
         Renderer rend = paintable.getRenderer();
 
         paintMaterial.SetFloat(prepareUVID, 0);
@@ -67,13 +74,14 @@ public class PaintManager : Singleton<PaintManager>{
         paintMaterial.SetColor(colorID, color ?? Color.red);
         extendMaterial.SetFloat(uvOffsetID, paintable.extendsIslandOffset);
         extendMaterial.SetTexture(uvIslandsID, uvIslands);
+        blendMaterial.SetTexture(alphaBlendID, blend);
 
 
         command.SetRenderTarget(mask);
         command.DrawRenderer(rend, paintMaterial, 0);
 
         command.SetRenderTarget(support);
-        command.Blit(mask, support);
+        command.Blit(mask, support, blendMaterial);
         command.SetRenderTarget(extend);
         command.Blit(mask, extend, extendMaterial);
 
