@@ -59,15 +59,35 @@
                 float4 col = tex2D(_MainTex, i.uv);
                 float f = mask(i.worldPos, _PainterPosition, _Radius, _Hardness);
                 float edge = f * _Strength;
-                
-
                 float4 newCol = lerp(col, _PainterColor, edge);
-                newCol.a = max(newCol.a, col.a);
-                float fac = (col.a < newCol.a);
-                float4 outCol = lerp(col, newCol, 0.5);
-
                 
+                float4 outCol = newCol;
+                outCol.a = max(newCol.a, col.a);
+                float oFac = (newCol.a > 0.01);
+                newCol.a = newCol.a * oFac;
+                float aFac = (1 > newCol.a);
+                //outCol.a = (aFac * newCol.a * 0.01) + col.a;
+
+                //float rFac = -(col.r - newCol.r);
+                //float rEqual = (abs(col.r - newCol.r) > 0.01);
+                //rFac = rFac * rEqual;
+
+                //float gFac = -(col.g - newCol.g);
+                //float gEqual = (abs(col.g - newCol.g) > 0.01);
+                //gFac = gFac * gEqual;
+
+                //float bFac = -(col.b - newCol.b);
+                //float bEqual = (abs(col.b - newCol.b) > 0.01);
+                //bFac = bFac * bEqual;
+                
+                //float4 outCol  = float4(.5, .5, .5, 1);
+
+                //outCol.a = (aFac * (0.01)) + col.a;
+                //outCol.r = (rFac * (0.01 * newCol.a)) + col.r;
+                //outCol.g = (gFac * (0.01 * newCol.a)) + col.g;
+                //outCol.b = (bFac * (0.01 * newCol.a)) + col.b;
                 return outCol;
+                
             }
             ENDCG
         }
