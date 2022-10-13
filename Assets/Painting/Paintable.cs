@@ -1,7 +1,7 @@
 using UnityEngine;
 
 public class Paintable : MonoBehaviour {
-    const int TEXTURE_SIZE = 4096;
+    const int TEXTURE_SIZE = 8192;
 
     public float extendsIslandOffset = 1;
 

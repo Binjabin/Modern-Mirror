@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 
-public class Basketball : MonoBehaviour
+public class CollisionObject: MonoBehaviour
 {
     [SerializeField] LayerMask canTouchHandsLayer;
     [SerializeField] LayerMask cannotTouchHandsLayer;

@@ -25,7 +25,7 @@ public class ObjectSensor : MonoBehaviour
 
     void OnTriggerExit(Collider other)
     {
-        Basketball basketball = other.gameObject.GetComponent<Basketball>();
+        CollisionObject basketball = other.gameObject.GetComponent<CollisionObject>();
         if (basketball != null)
         {
             basketball.HandExit(gameObject);
