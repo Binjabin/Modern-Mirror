@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.XR.Interaction.Toolkit;
 
 public class SprayPainter: MonoBehaviour{
     public Color paintColor;
@@ -10,35 +11,45 @@ public class SprayPainter: MonoBehaviour{
     public float hardness = 1;
 
     public float range = 5;
+    private ActionBasedController controller;
+    bool isPressed;
 
     void Start(){
         //var pr = part.GetComponent<ParticleSystemRenderer>();
         //Color c = new Color(pr.material.color.r, pr.material.color.g, pr.material.color.b, .8f);
         //paintColor = c;
+        controller = GetComponent<ActionBasedController>();
     }
 
     void Update()
     {
-        RaycastHit hit;
-        Vector3 raycastDirection = transform.forward;
-        //GetRandomDirectionInCone(spraySpread);
-        Physics.Raycast(transform.position, raycastDirection, out hit, range);
-        Debug.DrawRay(transform.position, raycastDirection, Color.red);
-        Paintable p;
-        float lerpFactor = (hit.distance)/range;
-        Debug.Log(lerpFactor);
-        paintColor.a = Mathf.Lerp(1, 0, lerpFactor);
-        if(hit.collider != null)
+        isPressed = controller.activateAction.action.ReadValue<bool>();
+        if (isPressed)
         {
-            p = hit.collider.gameObject.GetComponent<Paintable>();
-            if(p != null){
-                Debug.Log("a particle paints!");
-                Vector3 pos = hit.point;
-                float paintRadius = hit.distance * radius;
-                PaintManager.instance.paint(p, pos, paintRadius, hardness, strength, paintColor);
+            RaycastHit hit;
+            Vector3 raycastDirection = transform.forward;
+            //GetRandomDirectionInCone(spraySpread);
+            Physics.Raycast(transform.position, raycastDirection, out hit, range);
+            Debug.DrawRay(transform.position, raycastDirection, Color.red);
+            Paintable p;
+            float lerpFactor = (hit.distance) / range;
+            Debug.Log(lerpFactor);
+            //paintColor.a = Mathf.Lerp(1, 0, lerpFactor);
+            if (hit.collider != null)
+            {
+                p = hit.collider.gameObject.GetComponent<Paintable>();
+                if (p != null)
+                {
+                    Debug.Log("a particle paints!");
+                    Vector3 pos = hit.point;
+                    float paintRadius = hit.distance * radius;
+                    PaintManager.instance.paint(p, pos, paintRadius, hardness, strength, paintColor);
+                }
             }
         }
+        
     }
+
 
     Vector3 GetRandomDirectionInCone(float radius)
     {
