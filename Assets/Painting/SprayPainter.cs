@@ -15,15 +15,34 @@ public class SprayPainter: MonoBehaviour{
     bool isPressed;
     bool isHeld;
 
+    [SerializeField] ParticleSystem sprayEffect;
+    [SerializeField] GameObject handOrigin;
+
+    XRDirectInteractor[] hands;
+
+
     void Start(){
         //var pr = part.GetComponent<ParticleSystemRenderer>();
         //Color c = new Color(pr.material.color.r, pr.material.color.g, pr.material.color.b, .8f);
         //paintColor = c;
+        hands = FindObjectsOfType<XRDirectInteractor>();
     }
 
     public void Activated() { isPressed = true; }
     public void Deactivated() { isPressed = false; }
-    public void Selected() { isHeld = true; }
+    public void Selected()
+    { 
+        isHeld = true; 
+        if (hands[0].gameObject.tag == "LeftHand" && hands[0].interactablesSelected[0].transform.gameObject == gameObject.transform.parent.gameObject)
+        {
+            handOrigin.transform.localEulerAngles = new Vector3(90, 0, 0);
+        }
+        else if (hands[1].gameObject.tag == "RightHand" && hands[1].interactablesSelected[0].transform.gameObject == gameObject.transform.parent.gameObject)
+        {
+            handOrigin.transform.localEulerAngles = new Vector3(-90, 0, 0);
+        }
+    }
+
     public void Deselected() { isPressed = false; isHeld = false; }
 
 
@@ -33,6 +52,12 @@ public class SprayPainter: MonoBehaviour{
         {
             if (isPressed)
             {
+                if(!sprayEffect.isPlaying)
+                {
+                    sprayEffect.Play();
+                    Debug.Log("start spraying");
+                }
+                
                 RaycastHit hit;
                 Vector3 raycastDirection = transform.forward;
                 //GetRandomDirectionInCone(spraySpread);
@@ -40,7 +65,6 @@ public class SprayPainter: MonoBehaviour{
                 Debug.DrawRay(transform.position, raycastDirection, Color.red);
                 Paintable p;
                 float lerpFactor = (hit.distance) / range;
-                Debug.Log(lerpFactor);
                 //paintColor.a = Mathf.Lerp(1, 0, lerpFactor);
                 if (hit.collider != null)
                 {
@@ -54,6 +78,14 @@ public class SprayPainter: MonoBehaviour{
                     }
                 }
             }
+            else
+            {
+                sprayEffect.Stop();
+            }
+        }
+        else
+        {
+            sprayEffect.Stop();
         }
         
         

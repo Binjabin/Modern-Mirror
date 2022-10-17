@@ -391,7 +391,7 @@ GameObject:
   - component: {fileID: 8079273393155288793}
   m_Layer: 9
   m_Name: Left Hand
-  m_TagString: Untagged
+  m_TagString: LeftHand
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1191,3 +1191,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ebb719cb0daea0f42a3ffb64796b7b2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isLeft: 0

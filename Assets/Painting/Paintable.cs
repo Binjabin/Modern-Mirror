@@ -1,8 +1,8 @@
 using UnityEngine;
 
 public class Paintable : MonoBehaviour {
-    const int TEXTURE_SIZE = 8192;
-
+    const int TEXTURE_SIZE = 1024;
+    [SerializeField] int textureSizeMultiplier = 4;
     public float extendsIslandOffset = 1;
 
     RenderTexture extendIslandsRenderTexture;
@@ -28,22 +28,23 @@ public class Paintable : MonoBehaviour {
     public RenderTexture getCurrent() => currentMask;
 
     void Start() {
-        maskRenderTexture = new RenderTexture(TEXTURE_SIZE, TEXTURE_SIZE, 0);
+        int thisTextureSize = TEXTURE_SIZE * textureSizeMultiplier;
+        maskRenderTexture = new RenderTexture(thisTextureSize, thisTextureSize, 0);
         maskRenderTexture.filterMode = FilterMode.Bilinear;
 
-        extendIslandsRenderTexture = new RenderTexture(TEXTURE_SIZE, TEXTURE_SIZE, 0);
+        extendIslandsRenderTexture = new RenderTexture(thisTextureSize, thisTextureSize, 0);
         extendIslandsRenderTexture.filterMode = FilterMode.Bilinear;
 
-        blendTexture = new RenderTexture(TEXTURE_SIZE, TEXTURE_SIZE, 0);
+        blendTexture = new RenderTexture(thisTextureSize, thisTextureSize, 0);
         blendTexture.filterMode = FilterMode.Bilinear;
 
-        uvIslandsRenderTexture = new RenderTexture(TEXTURE_SIZE, TEXTURE_SIZE, 0);
+        uvIslandsRenderTexture = new RenderTexture(thisTextureSize, thisTextureSize, 0);
         uvIslandsRenderTexture.filterMode = FilterMode.Bilinear;
 
-        supportTexture = new RenderTexture(TEXTURE_SIZE, TEXTURE_SIZE, 0);
+        supportTexture = new RenderTexture(thisTextureSize, thisTextureSize, 0);
         supportTexture.filterMode =  FilterMode.Bilinear;
         
-        currentMask = new RenderTexture(TEXTURE_SIZE, TEXTURE_SIZE, 0);
+        currentMask = new RenderTexture(thisTextureSize, thisTextureSize, 0);
         currentMask.filterMode =  FilterMode.Bilinear;
 
         rend = GetComponent<Renderer>();
