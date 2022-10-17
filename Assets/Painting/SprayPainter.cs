@@ -18,7 +18,7 @@ public class SprayPainter: MonoBehaviour{
     [SerializeField] ParticleSystem sprayEffect;
     [SerializeField] GameObject handOrigin;
 
-    XRDirectInteractor[] hands;
+    [SerializeField] XRDirectInteractor[] hands;
 
 
     void Start(){
@@ -32,14 +32,31 @@ public class SprayPainter: MonoBehaviour{
     public void Deactivated() { isPressed = false; }
     public void Selected()
     { 
-        isHeld = true; 
-        if (hands[0].gameObject.tag == "LeftHand" && hands[0].interactablesSelected[0].transform.gameObject == gameObject.transform.parent.gameObject)
+        isHeld = true;
+        Debug.Log("is left:" + hands[0].gameObject.tag == "LeftHand");
+        Debug.Log("is right:" + hands[1].gameObject.tag == "RightHand");
+        if (hands[0].interactablesSelected[0].transform.gameObject == gameObject.transform.parent.gameObject)
         {
-            handOrigin.transform.localEulerAngles = new Vector3(90, 0, 0);
+            if (hands[0].gameObject.tag == "LeftHand")
+            {
+                handOrigin.transform.localEulerAngles = new Vector3(-90, 0, -90);
+            }
+            else if (hands[0].gameObject.tag == "RightHand")
+            {
+                handOrigin.transform.localEulerAngles = new Vector3(-90, 0, 90);
+            }
+
         }
-        else if (hands[1].gameObject.tag == "RightHand" && hands[1].interactablesSelected[0].transform.gameObject == gameObject.transform.parent.gameObject)
+        else if (hands[1].interactablesSelected[0].transform.gameObject == gameObject.transform.parent.gameObject)
         {
-            handOrigin.transform.localEulerAngles = new Vector3(-90, 0, 0);
+            if (hands[1].gameObject.tag == "LeftHand")
+            {
+                handOrigin.transform.localEulerAngles = new Vector3(-90, 0, -90);
+            }
+            else if (hands[1].gameObject.tag == "RightHand")
+            {
+                handOrigin.transform.localEulerAngles = new Vector3(-90, 0, 90);
+            }
         }
     }
 
