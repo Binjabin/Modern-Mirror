@@ -18,7 +18,7 @@ public class InteractableObjectExtentions : MonoBehaviour
 
     [Header("Object Flip")]
     [SerializeField] bool doObjectFlip;
-    [SerializeField] GameObject handOrigin;
+    [SerializeField] GameObject holdingPivotPoint;
     [SerializeField] Vector3 leftHandRotation;
     [SerializeField] Vector3 rightHandRotation;
 
@@ -55,7 +55,7 @@ public class InteractableObjectExtentions : MonoBehaviour
 
     }
 
-    public void HandExit(GameObject hand)
+    public void ExitHandProximity(GameObject hand)
     {
         if(dynamicCollisions)
         {
@@ -88,11 +88,11 @@ public class InteractableObjectExtentions : MonoBehaviour
         {
             if (currentHand.tag == "LeftHand")
             {
-                handOrigin.transform.localEulerAngles = leftHandRotation;
+                holdingPivotPoint.transform.localEulerAngles = leftHandRotation;
             }
             else if (currentHand.tag == "RightHand")
             {
-                handOrigin.transform.localEulerAngles = rightHandRotation;
+                holdingPivotPoint.transform.localEulerAngles = rightHandRotation;
             }
 
         }

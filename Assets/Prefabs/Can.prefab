@@ -640,13 +640,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89c0c6471a8c6054c827f1bf79ea0c30, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hands: []
+  dynamicCollisions: 1
   canTouchHandsLayer:
     serializedVersion: 2
     m_Bits: 1
   cannotTouchHandsLayer:
     serializedVersion: 2
     m_Bits: 2048
-  canTouchHandsCooldown: 0
+  doObjectFlip: 1
+  holdingPivotPoint: {fileID: 2216433490442628613}
+  leftHandRotation: {x: -90, y: 0, z: -90}
+  rightHandRotation: {x: -90, y: 0, z: 90}
 --- !u!114 &-4964536428622287426
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5541,11 +5546,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   paintColor: {r: 1, g: 0, b: 0.7879014, a: 0.78431374}
   radius: 0.2
-  strength: 0.5
+  strength: 1
   hardness: 1
   range: 1
   sprayEffect: {fileID: 3352148488879387359}
-  handOrigin: {fileID: 2216433490442628613}
 --- !u!1 &3361294182909842672
 GameObject:
   m_ObjectHideFlags: 0

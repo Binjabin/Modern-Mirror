@@ -220,13 +220,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89c0c6471a8c6054c827f1bf79ea0c30, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hands: []
+  dynamicCollisions: 1
   canTouchHandsLayer:
     serializedVersion: 2
     m_Bits: 1
   cannotTouchHandsLayer:
     serializedVersion: 2
     m_Bits: 2048
-  canTouchHandsCooldown: 0.5
+  doObjectFlip: 0
+  holdingPivotPoint: {fileID: 0}
+  leftHandRotation: {x: 0, y: 0, z: 0}
+  rightHandRotation: {x: 0, y: 0, z: 0}
 --- !u!1 &6015834649245409426
 GameObject:
   m_ObjectHideFlags: 0

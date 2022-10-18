@@ -5,8 +5,6 @@ using UnityEngine.XR.Interaction.Toolkit;
 
 public class ObjectSensor : MonoBehaviour
 {
-    //use -1 for left, 1 for right
-    [SerializeField] int isLeft;
     GameObject handParent;
 
     // Start is called before the first frame update
@@ -25,10 +23,10 @@ public class ObjectSensor : MonoBehaviour
 
     void OnTriggerExit(Collider other)
     {
-        CollisionObject basketball = other.gameObject.GetComponent<CollisionObject>();
-        if (basketball != null)
+        InteractableObjectExtentions interactable = other.gameObject.GetComponent<InteractableObjectExtentions>();
+        if (interactable != null)
         {
-            basketball.HandExit(gameObject);
+            interactable.ExitHandProximity(gameObject);
         }
     }
 }
