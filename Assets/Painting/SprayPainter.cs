@@ -16,50 +16,16 @@ public class SprayPainter: MonoBehaviour{
     bool isHeld;
 
     [SerializeField] ParticleSystem sprayEffect;
-    [SerializeField] GameObject handOrigin;
 
-    [SerializeField] XRDirectInteractor[] hands;
 
 
     void Start(){
-        //var pr = part.GetComponent<ParticleSystemRenderer>();
-        //Color c = new Color(pr.material.color.r, pr.material.color.g, pr.material.color.b, .8f);
-        //paintColor = c;
-        hands = FindObjectsOfType<XRDirectInteractor>();
+       
     }
 
     public void Activated() { isPressed = true; }
     public void Deactivated() { isPressed = false; }
-    public void Selected()
-    { 
-        isHeld = true;
-        Debug.Log("is left:" + hands[0].gameObject.tag == "LeftHand");
-        Debug.Log("is right:" + hands[1].gameObject.tag == "RightHand");
-        if (hands[0].interactablesSelected[0].transform.gameObject == gameObject.transform.parent.gameObject)
-        {
-            if (hands[0].gameObject.tag == "LeftHand")
-            {
-                handOrigin.transform.localEulerAngles = new Vector3(-90, 0, -90);
-            }
-            else if (hands[0].gameObject.tag == "RightHand")
-            {
-                handOrigin.transform.localEulerAngles = new Vector3(-90, 0, 90);
-            }
-
-        }
-        else if (hands[1].interactablesSelected[0].transform.gameObject == gameObject.transform.parent.gameObject)
-        {
-            if (hands[1].gameObject.tag == "LeftHand")
-            {
-                handOrigin.transform.localEulerAngles = new Vector3(-90, 0, -90);
-            }
-            else if (hands[1].gameObject.tag == "RightHand")
-            {
-                handOrigin.transform.localEulerAngles = new Vector3(-90, 0, 90);
-            }
-        }
-    }
-
+    public void Selected(){ isHeld = true; }
     public void Deselected() { isPressed = false; isHeld = false; }
 
 
@@ -106,14 +72,5 @@ public class SprayPainter: MonoBehaviour{
         }
         
         
-    }
-
-
-    Vector3 GetRandomDirectionInCone(float radius)
-    {
-        Vector2 circle = Random.insideUnitCircle * radius;
-        Vector3 target = transform.position + transform.forward + transform.rotation * new Vector3(circle.x, circle.y);
-        Vector3 direction = Vector3.Normalize(target - transform.position);
-        return direction;
     }
 }
