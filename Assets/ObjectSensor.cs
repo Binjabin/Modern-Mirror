@@ -26,7 +26,8 @@ public class ObjectSensor : MonoBehaviour
         InteractableObjectExtentions interactable = other.gameObject.GetComponent<InteractableObjectExtentions>();
         if (interactable != null)
         {
-            interactable.ExitHandProximity(gameObject);
+            
+            interactable.ExitHandProximity(handParent);
         }
     }
 }

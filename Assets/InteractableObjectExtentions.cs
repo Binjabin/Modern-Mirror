@@ -39,11 +39,13 @@ public class InteractableObjectExtentions : MonoBehaviour
 
     public void PickedUp()
     {
+        
         isHeld = true;
         handNearby = true;
 
         if (dynamicCollisions)
         {
+            Debug.Log("changed layer");
             SetLayer(cannotTouchHandsLayer);
             releasedByObject = GetHoldingHand();
         }
@@ -59,10 +61,14 @@ public class InteractableObjectExtentions : MonoBehaviour
     {
         if(dynamicCollisions)
         {
+            Debug.Log("a hand left proximity. Checking for: " + releasedByObject + ". Event triggered by " + hand);
             if (!isHeld)
             {
+                
                 if (releasedByObject == hand)
                 {
+                    Debug.Log("most recent holding hand left proximity");
+                    SetLayer(canTouchHandsLayer);
                     handNearby = false;
                 }
             }
@@ -86,9 +92,11 @@ public class InteractableObjectExtentions : MonoBehaviour
         GameObject currentHand = GetHoldingHand();
         if (currentHand != null)
         {
+            
             if (currentHand.tag == "LeftHand")
             {
                 holdingPivotPoint.transform.localEulerAngles = leftHandRotation;
+
             }
             else if (currentHand.tag == "RightHand")
             {
@@ -96,6 +104,11 @@ public class InteractableObjectExtentions : MonoBehaviour
             }
 
         }
+        else
+        {
+            Debug.Log("object flip called with no hand found");
+        }
+        
     }
 
     
@@ -120,11 +133,16 @@ public class InteractableObjectExtentions : MonoBehaviour
         {
             for (int i = 0; i < hands.Length; i++)
             {
-                if(hands[i].interactablesSelected[0].transform.gameObject == gameObject.transform.parent.gameObject)
+                Debug.Log(hands[i]);
+                if(hands[i].interactablesSelected.Count > 0)
                 {
-                    holdingHand = hands[i].interactablesSelected[0].transform.gameObject;
+                    if (hands[i].interactablesSelected[0].transform.gameObject == gameObject)
+                    {
+                        Debug.Log(hands[i].interactablesSelected[0].transform.gameObject);
+                        holdingHand = hands[i].gameObject;
+                    }
+
                 }
-                
             }
             return holdingHand;
         }
