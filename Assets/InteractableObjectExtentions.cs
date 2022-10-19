@@ -22,13 +22,25 @@ public class InteractableObjectExtentions : MonoBehaviour
     [SerializeField] Vector3 leftHandRotation;
     [SerializeField] Vector3 rightHandRotation;
 
+    [Header("Despawner")]
+    [SerializeField] float despawnTime;
+    [SerializeField] MeshRenderer renderer;
+    float despawnTimer;
+    QueuedObjectSpawner spawner;
 
     void Start()
     {
+        despawnTimer = 0f;
         hands = FindObjectsOfType<XRDirectInteractor>();
         handNearby = false;
         isHeld = false;
         SetLayer(canTouchHandsLayer);
+
+        renderer = GetComponent<MeshRenderer>();
+        if(renderer == null)
+        {
+            renderer = GetComponentInChildren<MeshRenderer>();
+        }
     }
 
     // Update is called once per frame
@@ -36,7 +48,10 @@ public class InteractableObjectExtentions : MonoBehaviour
     {
         isHeld = false;
     }
-
+    public void LinkSpawner(QueuedObjectSpawner linkThis)
+    {
+        spawner = linkThis;
+    }
     public void PickedUp()
     {
         
@@ -111,16 +126,35 @@ public class InteractableObjectExtentions : MonoBehaviour
         
     }
 
-    
+    void DespawnObject()
+    {
+        if(spawner != null)
+        {
+            
+            Color color = renderer.material.GetColor("_BaseColor");
+            spawner.RemoveColor(color);
+        }
+        Destroy(gameObject);
+    }
 
     private void Update()
     {
         if (!isHeld)
         {
+            despawnTimer += Time.deltaTime;
+            if(despawnTimer >= despawnTime)
+            {
+                DespawnObject();
+            }
             if (!handNearby)
             {
+                
                 SetLayer(canTouchHandsLayer);
             }
+        }
+        else
+        {
+            despawnTimer = 0f;
         }
 
     }

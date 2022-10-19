@@ -46,7 +46,7 @@ SphereCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.08
+  m_Radius: 0.1
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &3901285503953209197
 Rigidbody:
@@ -232,6 +232,8 @@ MonoBehaviour:
   holdingPivotPoint: {fileID: 0}
   leftHandRotation: {x: 0, y: 0, z: 0}
   rightHandRotation: {x: 0, y: 0, z: 0}
+  despawnTime: 3
+  renderer: {fileID: 0}
 --- !u!1 &6015834649245409426
 GameObject:
   m_ObjectHideFlags: 0
@@ -259,7 +261,7 @@ Transform:
   m_GameObject: {fileID: 6015834649245409426}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 10, y: 10, z: 10}
+  m_LocalScale: {x: 12.5, y: 12.5, z: 12.5}
   m_Children: []
   m_Father: {fileID: 3901285503953209195}
   m_RootOrder: 0
