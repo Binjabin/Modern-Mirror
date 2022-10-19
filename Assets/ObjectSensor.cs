@@ -1,17 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.XR.Interaction.Toolkit;
 
 public class ObjectSensor : MonoBehaviour
 {
-    GameObject handParent;
-
+    public List<InteractableObjectExtentions> objectsInZone;
+    int objCount;
+    [SerializeField] bool sendNotifications = false;
+    public bool isHoop = false;
     // Start is called before the first frame update
     void Start()
     {
-        handParent = gameObject.GetComponentInParent<XRDirectInteractor>().gameObject;
-
+        objCount = 0;
     }
 
     // Update is called once per frame
@@ -20,14 +20,31 @@ public class ObjectSensor : MonoBehaviour
         
     }
 
-
-    void OnTriggerExit(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
-        InteractableObjectExtentions interactable = other.gameObject.GetComponent<InteractableObjectExtentions>();
-        if (interactable != null)
+        objCount++;
+        InteractableObjectExtentions newObject = other.gameObject.GetComponent<InteractableObjectExtentions>();
+        if(newObject != null)
         {
-            
-            interactable.ExitHandProximity(handParent);
+            objectsInZone.Add(newObject);
+            if(sendNotifications)
+            {
+                newObject.EnteredSensor(this);
+            }
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        objCount--;
+        InteractableObjectExtentions newObject = other.gameObject.GetComponent<InteractableObjectExtentions>();
+        if(newObject != null)
+        {
+            objectsInZone.Remove(newObject);
+            if(sendNotifications)
+            {
+                newObject.ExitedSensor(this);
+            }
         }
     }
 }

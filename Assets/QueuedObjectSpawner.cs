@@ -7,7 +7,7 @@ public class QueuedObjectSpawner : MonoBehaviour
     [Header("Spawning")]
     [SerializeField] bool funnyMode;
     [SerializeField] GameObject objectPrefab;
-    [SerializeField] float objcount;
+    [SerializeField] int objCount;
     [SerializeField] float spawnCooldown = 1f;
     float timeSinceLastSpawn;
 
@@ -19,10 +19,21 @@ public class QueuedObjectSpawner : MonoBehaviour
     [SerializeField] float minimumUniqueColorThreshold;
     float uniqueColorThreshold;
 
+    [Header("Safe Area")]
+    public ObjectSensor safeZone;
+
     // Start is called before the first frame update
     void Start()
     {
-        objcount = 0;
+        objCount = 0;
+        if(safeZone == null)
+        {
+            if(gameObject.transform.GetChild(0) != null);
+            {
+                safeZone = GetComponentInChildren<ObjectSensor>();
+            }
+            
+        }
     }
 
     // Update is called once per frame
@@ -35,7 +46,7 @@ public class QueuedObjectSpawner : MonoBehaviour
         else
         {
             timeSinceLastSpawn += Time.deltaTime;
-            if (objcount == 0)
+            if (objCount == 0)
             {
                 
                 if(timeSinceLastSpawn > spawnCooldown)
@@ -141,11 +152,11 @@ public class QueuedObjectSpawner : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        objcount++;
+        objCount++;
     }
     private void OnTriggerExit(Collider other)
     {
-        objcount--;
+        objCount--;
     }
 
     public void ScoreColor(Color color)

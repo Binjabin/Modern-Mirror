@@ -2,7 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
-
+public enum DespawnMode
+{
+    TimeAfterSpawn,
+    TimeAfterReleased,
+    TimeAfterLeaveArea,
+    
+}
 public class InteractableObjectExtentions : MonoBehaviour
 {
     [Header("Hands")]
@@ -23,10 +29,19 @@ public class InteractableObjectExtentions : MonoBehaviour
     [SerializeField] Vector3 rightHandRotation;
 
     [Header("Despawner")]
+    [SerializeField] bool doObjectDespawn;
+    [SerializeField] DespawnMode despawnMode;
+    bool hasBeenHeld;
     [SerializeField] float despawnTime;
     [SerializeField] MeshRenderer renderer;
+    
     float despawnTimer;
     QueuedObjectSpawner spawner;
+    ObjectSensor safeZone;
+
+    [Header("Hoop")]
+    [SerializeField] bool isScoreable;
+    List<ObjectSensor> hoopSensors = new List<ObjectSensor>();
 
     void Start()
     {
@@ -34,8 +49,9 @@ public class InteractableObjectExtentions : MonoBehaviour
         hands = FindObjectsOfType<XRDirectInteractor>();
         handNearby = false;
         isHeld = false;
+        hasBeenHeld = false;
         SetLayer(canTouchHandsLayer);
-
+        GetHoopSensors();
         renderer = GetComponent<MeshRenderer>();
         if(renderer == null)
         {
@@ -43,6 +59,17 @@ public class InteractableObjectExtentions : MonoBehaviour
         }
     }
 
+    void GetHoopSensors()
+    {
+        var sensors = FindObjectsOfType<ObjectSensor>();
+        foreach(ObjectSensor sensor in sensors)
+        {
+            if(sensor.isHoop)
+            {
+                hoopSensors.Add(sensor);
+            }
+        }
+    }
     // Update is called once per frame
     public void Released()
     {
@@ -51,10 +78,14 @@ public class InteractableObjectExtentions : MonoBehaviour
     public void LinkSpawner(QueuedObjectSpawner linkThis)
     {
         spawner = linkThis;
+        if(despawnMode == DespawnMode.TimeAfterLeaveArea)
+        {
+            safeZone = spawner.safeZone;
+        }
     }
     public void PickedUp()
     {
-        
+        hasBeenHeld = true;
         isHeld = true;
         handNearby = true;
 
@@ -137,15 +168,77 @@ public class InteractableObjectExtentions : MonoBehaviour
         Destroy(gameObject);
     }
 
+    void ScoreObject()
+    {
+        if(spawner != null)
+        {
+            
+            Color color = renderer.material.GetColor("_BaseColor");
+            spawner.ScoreColor(color);
+        }
+        Destroy(gameObject);
+    }
+
     private void Update()
     {
         if (!isHeld)
         {
-            despawnTimer += Time.deltaTime;
-            if(despawnTimer >= despawnTime)
+            
+            if(doObjectDespawn)
             {
-                DespawnObject();
+                
+                if(despawnMode == DespawnMode.TimeAfterSpawn)
+                {
+                    despawnTimer += Time.deltaTime;
+                }
+                else if(despawnMode == DespawnMode.TimeAfterReleased)
+                {
+                    if(isHeld)
+                    {
+                        despawnTimer = 0f;
+                    }
+                    else
+                    {
+                        if(hasBeenHeld)
+                        {
+                            despawnTimer += Time.deltaTime;
+                        }
+                        else
+                        {
+                            despawnTimer = 0f;
+                        }
+                        
+                    }
+                }
+                else if(despawnMode == DespawnMode.TimeAfterLeaveArea)
+                {
+                    if(safeZone.objectsInZone.Contains(this))
+                    {
+                        despawnTimer = 0f;
+                        
+                    }
+                    else
+                    {
+                        if(isHeld)
+                        {
+                            despawnTimer = 0f;
+                        }
+                        else
+                        {
+                            despawnTimer += Time.deltaTime;
+                        }
+                        
+                    }
+                    
+                }
+
+
+                if(despawnTimer >= despawnTime)
+                {
+                    DespawnObject();
+                }
             }
+            
             if (!handNearby)
             {
                 
@@ -184,7 +277,40 @@ public class InteractableObjectExtentions : MonoBehaviour
         {
             return null;
         }
+    }
 
+    bool IsScored()
+    {
+        bool isScored = true;
+        foreach(ObjectSensor sensor in hoopSensors)
+        {
+            if(!sensor.objectsInZone.Contains(this))
+            {
+                isScored = false;
+                Debug.Log("Not all sensors contain ball!");
+            }
+        }
+        return isScored;
+    }
+
+    
+
+    public void EnteredSensor(ObjectSensor sensor)
+    {
+        if(isScoreable && sensor.isHoop)
+        {
+            if(IsScored())
+            {
+                Debug.Log("Score a hoop!");
+                ScoreObject();
+            }
+        }
+    }
+    
+    public void ExitedSensor(ObjectSensor sensor)
+    {
 
     }
+
+
 }

@@ -30,6 +30,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.667, y: 1.173, z: 0.864}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7713529120818212472}
   m_Father: {fileID: 0}
@@ -232,8 +233,11 @@ MonoBehaviour:
   holdingPivotPoint: {fileID: 0}
   leftHandRotation: {x: 0, y: 0, z: 0}
   rightHandRotation: {x: 0, y: 0, z: 0}
-  despawnTime: 3
+  doObjectDespawn: 1
+  despawnMode: 2
+  despawnTime: 5
   renderer: {fileID: 0}
+  isScoreable: 1
 --- !u!1 &6015834649245409426
 GameObject:
   m_ObjectHideFlags: 0
@@ -262,6 +266,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 12.5, y: 12.5, z: 12.5}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3901285503953209195}
   m_RootOrder: 0
@@ -285,6 +290,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
