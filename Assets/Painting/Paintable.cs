@@ -27,7 +27,8 @@ public class Paintable : MonoBehaviour {
 
     public RenderTexture getCurrent() => currentMask;
 
-    public void RequestInit() {
+    public void Start() {
+        Debug.Log("init requested!");
         int thisTextureSize = TEXTURE_SIZE * textureSizeMultiplier;
         maskRenderTexture = new RenderTexture(thisTextureSize, thisTextureSize, 0);
         maskRenderTexture.filterMode = FilterMode.Bilinear;

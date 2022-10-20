@@ -5,7 +5,7 @@ using UnityEngine.XR.Interaction.Toolkit;
 
 public class SprayPainter: MonoBehaviour{
     public Color paintColor;
-    
+    [SerializeField] bool variesWithDistance = true;
     public float radius = 0.05f;
     public float strength = 1;
     public float hardness = 1;
@@ -56,7 +56,16 @@ public class SprayPainter: MonoBehaviour{
                     {
                         Debug.Log("a particle paints!");
                         Vector3 pos = hit.point;
-                        float paintRadius = hit.distance * radius;
+                        float paintRadius;
+                        if(variesWithDistance)
+                        {
+                            paintRadius = hit.distance * radius;
+                        }
+                        else
+                        {
+                            paintRadius = radius;
+                        }
+                        
                         PaintManager.instance.paint(p, pos, paintRadius, hardness, strength, paintColor);
                     }
                 }

@@ -31,7 +31,7 @@ public class PaintManager : Singleton<PaintManager>{
     {
         base.Awake();
 
-        Paintable[] paintables = FindObjectsOfType<Paintable>();
+        //Paintable[] paintables = FindObjectsOfType<Paintable>();
 
 
         paintMaterial = new Material(texturePaint);
@@ -40,10 +40,10 @@ public class PaintManager : Singleton<PaintManager>{
         command = new CommandBuffer();
         command.name = "CommmandBuffer - " + gameObject.name;
 
-        foreach (Paintable paintable in paintables)
-        {
-            paintable.RequestInit();
-        }
+        //foreach (Paintable paintable in paintables)
+        //{
+            //paintable.RequestInit();
+        //}
     }
 
     public void initTextures(Paintable paintable){
