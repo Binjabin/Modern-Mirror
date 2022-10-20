@@ -57,6 +57,10 @@ public class QueuedObjectSpawner : MonoBehaviour
                     {
                         Color newObjectColor = GetNewColor();
                         newObject.GetComponentInChildren<MeshRenderer>().material.SetColor("_BaseColor", newObjectColor);
+                        if(newObject.GetComponentInChildren<ParticleSystemRenderer>() != null)
+                        {
+                            newObject.GetComponentInChildren<ParticleSystemRenderer>().material.SetColor("_BaseColor", newObjectColor);
+                        }
                         newObject.GetComponent<InteractableObjectExtentions>().LinkSpawner(this);
                     }
                 }

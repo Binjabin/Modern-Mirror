@@ -41,6 +41,9 @@ public class InteractableObjectExtentions : MonoBehaviour
 
     [Header("Hoop")]
     [SerializeField] bool isScoreable;
+    [SerializeField] AudioSource scoreSound;
+    [SerializeField] ParticleSystem particles;
+
     List<ObjectSensor> hoopSensors = new List<ObjectSensor>();
 
     void Start()
@@ -165,6 +168,20 @@ public class InteractableObjectExtentions : MonoBehaviour
             Color color = renderer.material.GetColor("_BaseColor");
             spawner.RemoveColor(color);
         }
+        StartCoroutine(DespawnObjectWithDelay(0.5f));
+    }
+
+    IEnumerator DespawnObjectWithDelay(float secs)
+    {
+        float elapsedTime = 0f;
+        Vector3 initialScale = transform.localScale;
+        while(elapsedTime < secs)
+        {
+            elapsedTime += Time.deltaTime;
+            transform.localScale = Vector3.Lerp(initialScale, Vector3.zero, elapsedTime / secs);
+            yield return null;
+        }
+        
         Destroy(gameObject);
     }
 
@@ -175,8 +192,10 @@ public class InteractableObjectExtentions : MonoBehaviour
             
             Color color = renderer.material.GetColor("_BaseColor");
             spawner.ScoreColor(color);
+            particles.Play();
+            scoreSound.Play();
         }
-        Destroy(gameObject);
+        StartCoroutine(DespawnObjectWithDelay(1f));
     }
 
     private void Update()
