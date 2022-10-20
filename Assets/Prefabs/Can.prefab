@@ -624,7 +624,7 @@ MonoBehaviour:
   m_AngularVelocityScale: 1
   m_TrackPosition: 1
   m_SmoothPosition: 1
-  m_SmoothPositionAmount: 0.3
+  m_SmoothPositionAmount: 0.15
   m_TightenPosition: 0.15
   m_TrackRotation: 1
   m_SmoothRotation: 1
@@ -676,6 +676,13 @@ MonoBehaviour:
   holdingPivotPoint: {fileID: 2216433490442628613}
   leftHandRotation: {x: -90, y: 0, z: -90}
   rightHandRotation: {x: -90, y: 0, z: 90}
+  doObjectDespawn: 0
+  despawnMode: 0
+  despawnTime: 0
+  renderer: {fileID: 0}
+  isScoreable: 0
+  scoreSound: {fileID: 0}
+  particles: {fileID: 0}
 --- !u!114 &-4964536428622287426
 MonoBehaviour:
   m_ObjectHideFlags: 0

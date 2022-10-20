@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEngine.Rendering;
+using System.Collections;
+using System.Collections.Generic;
 
 public class PaintManager : Singleton<PaintManager>{
 
@@ -25,14 +27,23 @@ public class PaintManager : Singleton<PaintManager>{
 
     CommandBuffer command;
 
-    public override void Awake(){
+    public override void Awake()
+    {
         base.Awake();
-        
+
+        Paintable[] paintables = FindObjectsOfType<Paintable>();
+
+
         paintMaterial = new Material(texturePaint);
         extendMaterial = new Material(extendIslands);
         blendMaterial = new Material(alphaBlend);
         command = new CommandBuffer();
         command.name = "CommmandBuffer - " + gameObject.name;
+
+        foreach (Paintable paintable in paintables)
+        {
+            paintable.RequestInit();
+        }
     }
 
     public void initTextures(Paintable paintable){

@@ -14,7 +14,7 @@ public class QueuedObjectSpawner : MonoBehaviour
     [Header("Colors")]
     [SerializeField] bool randomiseColors = true;
     [SerializeField] List<Color> inSceneColors = new List<Color>();
-    [SerializeField] List<Color> scoredColors = new List<Color>();
+    public List<Color> scoredColors = new List<Color>();
     [SerializeField] bool addColor;
     [SerializeField] float minimumUniqueColorThreshold;
     float uniqueColorThreshold;
@@ -179,7 +179,8 @@ public class QueuedObjectSpawner : MonoBehaviour
         {
             inSceneColors.Remove(removeColor);
         }
-        scoredColors.Add(color); 
+        scoredColors.Add(color);
+        GameInformation.scoredColors = scoredColors;
     }
 
     public void RemoveColor(Color color)
