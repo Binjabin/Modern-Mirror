@@ -180,7 +180,7 @@ public class QueuedObjectSpawner : MonoBehaviour
             inSceneColors.Remove(removeColor);
         }
         scoredColors.Add(color);
-        GameInformation.scoredColors = scoredColors;
+        GameManager.scoredColors = scoredColors;
     }
 
     public void RemoveColor(Color color)

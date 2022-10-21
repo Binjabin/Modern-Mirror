@@ -8,20 +8,37 @@ public class CanSpawner : MonoBehaviour
     [SerializeField] GameObject canPrefab;
     [SerializeField] bool spawnCansTrigger;
 
+
+    [SerializeField] Gradient noCanFallbackColors;
     // Start is called before the first frame update
 
     private void Start()
     {
 
     }
-    void SpawnCans()
+    public void SpawnCans()
     {
-        List<Color> colorsToSpawn = GameInformation.scoredColors;
+        List<Color> colorsToSpawn = GameManager.scoredColors;
+        
         foreach (Color color in colorsToSpawn)
         {
             int pointIndex = Random.Range(0, spawnPoints.Count - 1);
             GameObject spawnedCan = Instantiate(canPrefab, spawnPoints[pointIndex]);
             spawnedCan.GetComponent<SprayColor>().SetColor(color);
+        }
+
+        if (colorsToSpawn.Count == 0)
+        {
+            for(int i = 0; i < 5; i++)
+            {
+                float fac = Random.Range(0.0f, 1.0f);
+                Color color = noCanFallbackColors.Evaluate(fac);
+
+                int pointIndex = Random.Range(0, spawnPoints.Count - 1);
+                GameObject spawnedCan = Instantiate(canPrefab, spawnPoints[pointIndex]);
+                spawnedCan.GetComponent<SprayColor>().SetColor(color);
+                
+            }
         }
     }
 

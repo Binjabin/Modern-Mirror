@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SprayColor : MonoBehaviour
 {
-    [SerializeField] Gradient colorRange;
+    
     [SerializeField] GameObject cap;
     [SerializeField] GameObject sleave;
     [SerializeField] Material defaultCapMaterial;
@@ -14,6 +14,7 @@ public class SprayColor : MonoBehaviour
     // Update is called once per frame
     public void SetColor(Color color)
     {
+        
         cap.GetComponent<MeshRenderer>().material = defaultCapMaterial;
         cap.GetComponent<MeshRenderer>().material.SetColor("_BaseColor", color);
         sleave.GetComponent<MeshRenderer>().materials[1] = defaultCapMaterial;
