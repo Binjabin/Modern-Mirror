@@ -65,7 +65,10 @@ public class SprayPainter: MonoBehaviour{
                         {
                             paintRadius = radius;
                         }
-                        
+                        if(p.totalFill == true)
+                        {
+                            paintRadius = 10000;
+                        }
                         PaintManager.instance.paint(p, pos, paintRadius, hardness, strength, paintColor);
                     }
                 }
