@@ -9,6 +9,11 @@ public enum DespawnMode
     TimeAfterLeaveArea,
     
 }
+public enum SpawnerType
+{
+    QueuedObjectSpawner,
+    CanSpawner
+}
 public class InteractableObjectExtentions : MonoBehaviour
 {
     [Header("Hands")]
@@ -31,12 +36,16 @@ public class InteractableObjectExtentions : MonoBehaviour
     [Header("Despawner")]
     [SerializeField] bool doObjectDespawn;
     [SerializeField] DespawnMode despawnMode;
+    [SerializeField] SpawnerType spawnerMode;
     bool hasBeenHeld;
     [SerializeField] float despawnTime;
-    [SerializeField] MeshRenderer renderer;
-    
+    MeshRenderer renderer;
+    bool despawning;
+
     float despawnTimer;
-    QueuedObjectSpawner spawner;
+    QueuedObjectSpawner queuedObjectSpawner;
+    CanSpawner canSpawner;
+    int canStationIndex;
     ObjectSensor safeZone;
 
     [Header("Hoop")]
@@ -49,6 +58,7 @@ public class InteractableObjectExtentions : MonoBehaviour
     void Start()
     {
         despawnTimer = 0f;
+        despawning = false;
         hands = FindObjectsOfType<XRDirectInteractor>();
         handNearby = false;
         isHeld = false;
@@ -80,10 +90,19 @@ public class InteractableObjectExtentions : MonoBehaviour
     }
     public void LinkSpawner(QueuedObjectSpawner linkThis)
     {
-        spawner = linkThis;
+        queuedObjectSpawner = linkThis;
         if(despawnMode == DespawnMode.TimeAfterLeaveArea)
         {
-            safeZone = spawner.safeZone;
+            safeZone = queuedObjectSpawner.safeZone;
+        }
+    }
+    public void LinkSpawner(CanSpawner linkThis, int index)
+    {
+        canSpawner = linkThis;
+        if(despawnMode == DespawnMode.TimeAfterLeaveArea)
+        {
+            safeZone = canSpawner.safeZone;
+            canStationIndex = index;
         }
     }
     public void PickedUp()
@@ -162,12 +181,22 @@ public class InteractableObjectExtentions : MonoBehaviour
 
     void DespawnObject()
     {
-        if(spawner != null)
+        if(spawnerMode == SpawnerType.QueuedObjectSpawner)
         {
-            
-            Color color = renderer.material.GetColor("_BaseColor");
-            spawner.RemoveColor(color);
+            if(queuedObjectSpawner != null)
+            {
+                Color color = renderer.material.GetColor("_BaseColor");
+                queuedObjectSpawner.RemoveColor(color);
+            }
         }
+        if(spawnerMode == SpawnerType.CanSpawner)
+        {
+            if(canSpawner != null)
+            {
+                canSpawner.RespawnObject(canStationIndex);
+            }
+        }
+        
         StartCoroutine(DespawnObjectWithDelay(0.5f));
     }
 
@@ -187,14 +216,27 @@ public class InteractableObjectExtentions : MonoBehaviour
 
     void ScoreObject()
     {
-        if(spawner != null)
+        if(spawnerMode == SpawnerType.QueuedObjectSpawner)
         {
-            
-            Color color = renderer.material.GetColor("_BaseColor");
-            spawner.ScoreColor(color);
-            particles.Play();
-            scoreSound.Play();
+            if(queuedObjectSpawner != null)
+            {
+                Color color = renderer.material.GetColor("_BaseColor");
+                queuedObjectSpawner.ScoreColor(color);
+                particles.Play();
+                scoreSound.Play();
+            }
         }
+        if(spawnerMode == SpawnerType.CanSpawner)
+        {
+            if(canSpawner != null)
+            {
+                
+                Color color = renderer.material.GetColor("_BaseColor");
+                particles.Play();
+                scoreSound.Play();
+            }
+        }
+        
         StartCoroutine(DespawnObjectWithDelay(1f));
     }
 
@@ -229,12 +271,12 @@ public class InteractableObjectExtentions : MonoBehaviour
                         
                     }
                 }
+                
                 else if(despawnMode == DespawnMode.TimeAfterLeaveArea)
                 {
                     if(safeZone.objectsInZone.Contains(this))
                     {
                         despawnTimer = 0f;
-                        
                     }
                     else
                     {
@@ -252,9 +294,10 @@ public class InteractableObjectExtentions : MonoBehaviour
                 }
 
 
-                if(despawnTimer >= despawnTime)
+                if(despawnTimer >= despawnTime && !despawning)
                 {
                     DespawnObject();
+                    despawning = true;
                 }
             }
             

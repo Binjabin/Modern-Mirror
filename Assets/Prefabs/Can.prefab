@@ -676,10 +676,10 @@ MonoBehaviour:
   holdingPivotPoint: {fileID: 2216433490442628613}
   leftHandRotation: {x: -90, y: 0, z: -90}
   rightHandRotation: {x: -90, y: 0, z: 90}
-  doObjectDespawn: 0
-  despawnMode: 0
-  despawnTime: 0
-  renderer: {fileID: 0}
+  doObjectDespawn: 1
+  despawnMode: 2
+  spawnerMode: 1
+  despawnTime: 3
   isScoreable: 0
   scoreSound: {fileID: 0}
   particles: {fileID: 0}
@@ -695,35 +695,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57899d8cf0b43534eaa2dba811b01cc9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  colorRange:
-    serializedVersion: 2
-    key0: {r: 1, g: 0, b: 0, a: 1}
-    key1: {r: 0.95110893, g: 0, b: 1, a: 1}
-    key2: {r: 1, g: 0.98764145, b: 0, a: 0}
-    key3: {r: 1, g: 1, b: 1, a: 0}
-    key4: {r: 0, g: 0.07612944, b: 1, a: 0}
-    key5: {r: 0, g: 0.5943396, b: 0.11696971, a: 0}
-    key6: {r: 0.36898917, g: 0, b: 0.8113208, a: 0}
-    key7: {r: 0, g: 0, b: 0, a: 0}
-    ctime0: 7864
-    ctime1: 15728
-    ctime2: 23593
-    ctime3: 31457
-    ctime4: 39321
-    ctime5: 47185
-    ctime6: 55049
-    ctime7: 62914
-    atime0: 0
-    atime1: 65535
-    atime2: 0
-    atime3: 0
-    atime4: 0
-    atime5: 0
-    atime6: 0
-    atime7: 0
-    m_Mode: 1
-    m_NumColorKeys: 8
-    m_NumAlphaKeys: 2
   cap: {fileID: 3361294182909842672}
   sleave: {fileID: 1307277800694566848}
   defaultCapMaterial: {fileID: 2100000, guid: 62e5eb04aa66be24e9b08acb442b9658, type: 2}

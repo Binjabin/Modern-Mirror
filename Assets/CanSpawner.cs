@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class CanSpawner : MonoBehaviour
-{
-    [SerializeField] List<Transform> spawnPoints = new List<Transform>();
+{   
+    SprayCanStation[] spawnStations;
+    List<Transform> spawnPoints;
     [SerializeField] GameObject canPrefab;
     [SerializeField] bool spawnCansTrigger;
+    public ObjectSensor safeZone;
 
 
     [SerializeField] Gradient noCanFallbackColors;
@@ -14,32 +16,60 @@ public class CanSpawner : MonoBehaviour
 
     private void Start()
     {
-
+        spawnStations = GetComponentsInChildren<SprayCanStation>();
+        spawnPoints = new List<Transform>();
+        foreach(SprayCanStation station in spawnStations)
+        {
+            spawnPoints.Add(station.transform.GetChild(0));
+        }
     }
     public void SpawnCans()
     {
         List<Color> colorsToSpawn = GameManager.scoredColors;
-        
-        foreach (Color color in colorsToSpawn)
-        {
-            int pointIndex = Random.Range(0, spawnPoints.Count - 1);
-            GameObject spawnedCan = Instantiate(canPrefab, spawnPoints[pointIndex]);
-            spawnedCan.GetComponent<SprayColor>().SetColor(color);
-        }
-
+        int pointIndex = 0;
         if (colorsToSpawn.Count == 0)
         {
             for(int i = 0; i < 5; i++)
             {
                 float fac = Random.Range(0.0f, 1.0f);
                 Color color = noCanFallbackColors.Evaluate(fac);
-
-                int pointIndex = Random.Range(0, spawnPoints.Count - 1);
-                GameObject spawnedCan = Instantiate(canPrefab, spawnPoints[pointIndex]);
+                GameObject spawnedCan = Instantiate(canPrefab, spawnPoints[pointIndex].position, Quaternion.identity);
                 spawnedCan.GetComponent<SprayColor>().SetColor(color);
-                
+
+                pointIndex++;
             }
         }
+        else
+        {
+            
+            foreach (Color color in colorsToSpawn)
+            {
+                GameObject spawnedCan = Instantiate(canPrefab, spawnPoints[pointIndex].position, Quaternion.identity);
+                Debug.Log(spawnedCan);
+                spawnedCan.GetComponent<SprayColor>().SetColor(color);
+                spawnedCan.GetComponent<InteractableObjectExtentions>().LinkSpawner(this, pointIndex);
+
+                pointIndex++;
+            } 
+        }
+        int stationIndex = 0;
+        foreach(SprayCanStation station in spawnStations)
+        {
+            if(stationIndex >= pointIndex)
+            {
+                station.gameObject.SetActive(false);
+            }
+            stationIndex++;
+        }
+    }
+
+    public void RespawnObject(int index)
+    {
+        List<Color> colorsToSpawn = GameManager.scoredColors;
+        Color color = colorsToSpawn[index];
+        GameObject spawnedCan = Instantiate(canPrefab, spawnPoints[index].position, Quaternion.identity);
+        spawnedCan.GetComponent<SprayColor>().SetColor(color);
+        spawnedCan.GetComponent<InteractableObjectExtentions>().LinkSpawner(this, index);
     }
 
     // Update is called once per frame

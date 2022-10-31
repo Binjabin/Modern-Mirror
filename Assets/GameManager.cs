@@ -15,13 +15,6 @@ public class GameManager : MonoBehaviour
     bool inBasketball;
 
 
-    public void Start()
-    {
-        inBasketball = true;
-        painting.SetActive(false);
-        basketball.SetActive(true);
-        basketballTimeRemaining = basketballTime;
-    }
     public void ToPainting()
     {
         inBasketball = false;
@@ -29,6 +22,15 @@ public class GameManager : MonoBehaviour
         basketball.SetActive(false);
         FindObjectOfType<CanSpawner>().SpawnCans();
     }
+
+    public void Start()
+    {
+        inBasketball = true;
+        painting.SetActive(false);
+        basketball.SetActive(true);
+        basketballTimeRemaining = basketballTime;
+    }
+
     private void Update()
     {
         if(inBasketball)

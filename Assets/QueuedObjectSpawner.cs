@@ -53,6 +53,7 @@ public class QueuedObjectSpawner : MonoBehaviour
                 {
                     timeSinceLastSpawn = 0f;
                     GameObject newObject = Instantiate(objectPrefab, transform.position, Quaternion.identity);
+                    newObject.transform.parent = gameObject.transform.root;
                     if(randomiseColors)
                     {
                         Color newObjectColor = GetNewColor();
