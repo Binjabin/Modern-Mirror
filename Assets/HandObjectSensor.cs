@@ -5,12 +5,17 @@ using UnityEngine.XR.Interaction.Toolkit;
 
 public class HandObjectSensor : MonoBehaviour
 {
-    GameObject handParent;
+    GameObject handInteractor;
+
+    PhysicsHand physicsHand;
 
     // Start is called before the first frame update
     void Start()
     {
-        handParent = gameObject.GetComponentInParent<XRDirectInteractor>().gameObject;
+        physicsHand = gameObject.GetComponentInParent<PhysicsHand>();
+        handInteractor = physicsHand.followObject.GetComponent<XRDirectInteractor>().gameObject;
+
+        
 
     }
 
@@ -27,7 +32,7 @@ public class HandObjectSensor : MonoBehaviour
         if (interactable != null)
         {
             
-            interactable.ExitHandProximity(handParent);
+            interactable.ExitHandProximity(handInteractor);
         }
     }
 }

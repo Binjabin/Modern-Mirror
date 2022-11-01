@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR;
 
-public class HandAnimator : MonoBehaviour
+public class Hand : MonoBehaviour
 {
 	public InputDeviceCharacteristics controllerCharacteristics;
 
