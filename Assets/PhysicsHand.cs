@@ -17,12 +17,16 @@ public class PhysicsHand : MonoBehaviour
 	[SerializeField] Vector3 positionOffset;
 	[SerializeField] Vector3 rotationOffset;
 	private Rigidbody rb;
+	SkinnedMeshRenderer mesh;
+	Collider[] colliders;
 
 
 	// Start is called before the first frame update
 	void Start()
 	{
 		TryInitialize();
+		mesh = GetComponentInChildren<SkinnedMeshRenderer>();
+		colliders = GetComponentsInChildren<Collider>();
 
 		followTarget = followObject.transform;
 		rb = GetComponent<Rigidbody>();
@@ -53,12 +57,16 @@ public class PhysicsHand : MonoBehaviour
 	{
 		Vector3 positionWithOffset = followTarget.TransformPoint(positionOffset);
 		float distance = Vector3.Distance(positionWithOffset, transform.position);
-		rb.velocity = Vector3.Normalize(positionWithOffset - transform.position) * followSpeed * distance;
+		rb.velocity = Vector3.Normalize(positionWithOffset - transform.position) * followSpeed * Time.deltaTime * distance;
 
 		Quaternion rotationWithOffset = followTarget.rotation * Quaternion.Euler(rotationOffset);
 		Quaternion rotation = rotationWithOffset * Quaternion.Inverse(rb.rotation);
 		rotation.ToAngleAxis(out float angle, out Vector3 axis);
-		rb.angularVelocity = axis * angle * Mathf.Deg2Rad * rotationSpeed;
+		if (Mathf.Abs(axis.magnitude) != Mathf.Infinity)
+        {
+            if (angle > 180.0f) { angle -= 360.0f; }
+            rb.angularVelocity = axis * angle * Mathf.Deg2Rad * rotationSpeed * Time.deltaTime;
+        }
 
 	}
 
@@ -92,10 +100,28 @@ public class PhysicsHand : MonoBehaviour
 		}
 		else
 		{
-			//UpdateHandAnimation();
+			UpdateHandAnimation();
 			
 			
 		}
 		PhysicsMove();
+	}
+
+	public void StartHolding()
+	{
+		mesh.enabled = false;
+		foreach(Collider collider in colliders)
+		{
+			collider.enabled = false;
+		}
+	}
+
+	public void StopHolding()
+	{
+		mesh.enabled = true;
+		foreach(Collider collider in colliders)
+		{
+			collider.enabled = true;
+		}
 	}
 }

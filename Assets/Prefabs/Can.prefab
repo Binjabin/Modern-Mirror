@@ -5548,10 +5548,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   paintColor: {r: 1, g: 0, b: 0.7879014, a: 0.78431374}
   variesWithDistance: 1
-  radius: 0.1
+  radius: 0.2
   strength: 1
   hardness: 1
-  range: 1
+  range: 4
   sprayEffect: {fileID: 3352148488879387359}
 --- !u!1 &3361294182909842672
 GameObject:

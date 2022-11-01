@@ -384,7 +384,8 @@ MonoBehaviour:
   followObject: {fileID: 0}
   followSpeed: 30
   rotationSpeed: 100
-  followTarget: {fileID: 0}
+  positionOffset: {x: 0, y: 0, z: 0}
+  rotationOffset: {x: 0, y: 0, z: 0}
 --- !u!1 &109434732395284511
 GameObject:
   m_ObjectHideFlags: 0

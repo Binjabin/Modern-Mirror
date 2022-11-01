@@ -35,4 +35,6 @@ public class HandObjectSensor : MonoBehaviour
             interactable.ExitHandProximity(handInteractor);
         }
     }
+
+   
 }

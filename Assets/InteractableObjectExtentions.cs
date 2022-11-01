@@ -87,6 +87,12 @@ public class InteractableObjectExtentions : MonoBehaviour
     public void Released()
     {
         isHeld = false;
+        if (dynamicCollisions)
+        {
+            Debug.Log("changed layer");
+            SetLayer(cannotTouchHandsLayer);
+        }
+            
     }
     public void LinkSpawner(QueuedObjectSpawner linkThis)
     {
@@ -113,8 +119,6 @@ public class InteractableObjectExtentions : MonoBehaviour
 
         if (dynamicCollisions)
         {
-            Debug.Log("changed layer");
-            SetLayer(cannotTouchHandsLayer);
             releasedByObject = GetHoldingHand();
         }
 
