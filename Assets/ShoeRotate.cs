@@ -15,7 +15,7 @@ public class ShoeRotate : MonoBehaviour
 
     public void LeftButtonReleased()
     {
-        leftPressed = true;
+        leftPressed = false;
     }
 
     public void RightButtonPressed()
