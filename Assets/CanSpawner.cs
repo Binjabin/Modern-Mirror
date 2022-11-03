@@ -64,14 +64,15 @@ public class CanSpawner : MonoBehaviour
     public void RespawnObject(int index)
     {
         List<Color> colorsToSpawn = GameManager.scoredColors;
+        Color color;
         if (colorsToSpawn.Count == 0)
         {
             float fac = Random.Range(0.0f, 1.0f);
-            Color color = noCanFallbackColors.Evaluate(fac);
+            color = noCanFallbackColors.Evaluate(fac);
         }
         else
         {
-            Color color = colorsToSpawn[index];
+            color = colorsToSpawn[index];
         }
         
         GameObject spawnedCan = Instantiate(canPrefab, spawnPoints[index].position, Quaternion.identity);
