@@ -12,7 +12,8 @@ public enum DespawnMode
 public enum SpawnerType
 {
     QueuedObjectSpawner,
-    CanSpawner
+    CanSpawner,
+    SingleObjectSpawner
 }
 public class InteractableObjectExtentions : MonoBehaviour
 {
@@ -33,8 +34,9 @@ public class InteractableObjectExtentions : MonoBehaviour
     [SerializeField] Vector3 leftHandRotation;
     [SerializeField] Vector3 rightHandRotation;
 
-    [Header("Despawner")]
+    [Header("Spawning")]
     [SerializeField] bool doObjectDespawn;
+    [SerializeField] bool growOnObjectSpawn;
     [SerializeField] DespawnMode despawnMode;
     [SerializeField] SpawnerType spawnerMode;
     bool hasBeenHeld;
@@ -45,6 +47,7 @@ public class InteractableObjectExtentions : MonoBehaviour
     float despawnTimer;
     QueuedObjectSpawner queuedObjectSpawner;
     CanSpawner canSpawner;
+    SingleObjectSpawner singleSpawner;
     int canStationIndex;
     ObjectSensor safeZone;
 
@@ -54,6 +57,7 @@ public class InteractableObjectExtentions : MonoBehaviour
     [SerializeField] ParticleSystem particles;
 
     List<ObjectSensor> hoopSensors = new List<ObjectSensor>();
+
 
     void Start()
     {
@@ -69,6 +73,10 @@ public class InteractableObjectExtentions : MonoBehaviour
         if(renderer == null)
         {
             renderer = GetComponentInChildren<MeshRenderer>();
+        }
+        if(growOnObjectSpawn)
+        {
+            StartCoroutine(GrowOverTime(1f));
         }
     }
 
@@ -109,6 +117,14 @@ public class InteractableObjectExtentions : MonoBehaviour
         {
             safeZone = canSpawner.safeZone;
             canStationIndex = index;
+        }
+    }
+    public void LinkSpawner(SingleObjectSpawner linkThis)
+    {
+        singleSpawner = linkThis;
+        if(despawnMode == DespawnMode.TimeAfterLeaveArea)
+        {
+            safeZone = singleSpawner.safeZone;
         }
     }
     public void PickedUp()
@@ -200,8 +216,14 @@ public class InteractableObjectExtentions : MonoBehaviour
                 canSpawner.RespawnObject(canStationIndex);
             }
         }
-        
-        StartCoroutine(DespawnObjectWithDelay(0.5f));
+        if(spawnerMode == SpawnerType.SingleObjectSpawner)
+        {
+            if(singleSpawner != null)
+            {
+                singleSpawner.RespawnObject();
+            }
+        }
+        Destroy(gameObject);
     }
 
     IEnumerator DespawnObjectWithDelay(float secs)
@@ -214,8 +236,21 @@ public class InteractableObjectExtentions : MonoBehaviour
             transform.localScale = Vector3.Lerp(initialScale, Vector3.zero, elapsedTime / secs);
             yield return null;
         }
+        DespawnObject();
         
-        Destroy(gameObject);
+    }
+
+    IEnumerator GrowOverTime(float secs)
+    {
+        float elapsedTime = 0f;
+        Vector3 initialScale = transform.localScale;
+        while(elapsedTime < secs)
+        {
+            elapsedTime += Time.deltaTime;
+            transform.localScale = Vector3.Lerp(Vector3.zero, initialScale, elapsedTime / secs);
+            yield return null;
+        }
+        
     }
 
     void ScoreObject()
@@ -233,6 +268,16 @@ public class InteractableObjectExtentions : MonoBehaviour
         if(spawnerMode == SpawnerType.CanSpawner)
         {
             if(canSpawner != null)
+            {
+                
+                Color color = renderer.material.GetColor("_BaseColor");
+                particles.Play();
+                scoreSound.Play();
+            }
+        }
+        if(spawnerMode == SpawnerType.CanSpawner)
+        {
+            if(singleSpawner != null)
             {
                 
                 Color color = renderer.material.GetColor("_BaseColor");
@@ -300,7 +345,7 @@ public class InteractableObjectExtentions : MonoBehaviour
 
                 if(despawnTimer >= despawnTime && !despawning)
                 {
-                    DespawnObject();
+                    StartCoroutine(DespawnObjectWithDelay(0.5f));
                     despawning = true;
                 }
             }

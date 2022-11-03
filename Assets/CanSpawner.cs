@@ -10,11 +10,10 @@ public class CanSpawner : MonoBehaviour
     [SerializeField] bool spawnCansTrigger;
     public ObjectSensor safeZone;
 
-
     [SerializeField] Gradient noCanFallbackColors;
     // Start is called before the first frame update
 
-    private void Start()
+    public void SpawnCans()
     {
         spawnStations = GetComponentsInChildren<SprayCanStation>();
         spawnPoints = new List<Transform>();
@@ -22,9 +21,7 @@ public class CanSpawner : MonoBehaviour
         {
             spawnPoints.Add(station.transform.GetChild(0));
         }
-    }
-    public void SpawnCans()
-    {
+
         List<Color> colorsToSpawn = GameManager.scoredColors;
         int pointIndex = 0;
         if (colorsToSpawn.Count == 0)
@@ -34,6 +31,7 @@ public class CanSpawner : MonoBehaviour
                 float fac = Random.Range(0.0f, 1.0f);
                 Color color = noCanFallbackColors.Evaluate(fac);
                 GameObject spawnedCan = Instantiate(canPrefab, spawnPoints[pointIndex].position, Quaternion.identity);
+                spawnedCan.GetComponent<InteractableObjectExtentions>().LinkSpawner(this, pointIndex);
                 spawnedCan.GetComponent<SprayColor>().SetColor(color);
 
                 pointIndex++;
@@ -66,7 +64,16 @@ public class CanSpawner : MonoBehaviour
     public void RespawnObject(int index)
     {
         List<Color> colorsToSpawn = GameManager.scoredColors;
-        Color color = colorsToSpawn[index];
+        if (colorsToSpawn.Count == 0)
+        {
+            float fac = Random.Range(0.0f, 1.0f);
+            Color color = noCanFallbackColors.Evaluate(fac);
+        }
+        else
+        {
+            Color color = colorsToSpawn[index];
+        }
+        
         GameObject spawnedCan = Instantiate(canPrefab, spawnPoints[index].position, Quaternion.identity);
         spawnedCan.GetComponent<SprayColor>().SetColor(color);
         spawnedCan.GetComponent<InteractableObjectExtentions>().LinkSpawner(this, index);

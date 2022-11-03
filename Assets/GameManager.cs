@@ -21,6 +21,12 @@ public class GameManager : MonoBehaviour
         painting.SetActive(true);
         basketball.SetActive(false);
         FindObjectOfType<CanSpawner>().SpawnCans();
+        var singleSpawners = FindObjectsOfType<SingleObjectSpawner>(false);
+        foreach(SingleObjectSpawner spawner in singleSpawners)
+        {
+            spawner.RespawnObject();
+        }
+
     }
 
     public void Start()
@@ -29,6 +35,12 @@ public class GameManager : MonoBehaviour
         painting.SetActive(false);
         basketball.SetActive(true);
         basketballTimeRemaining = basketballTime;
+        var singleSpawners = FindObjectsOfType<SingleObjectSpawner>(false);
+        foreach(SingleObjectSpawner spawner in singleSpawners)
+        {
+            spawner.RespawnObject();
+        }
+
     }
 
     private void Update()

@@ -677,6 +677,7 @@ MonoBehaviour:
   leftHandRotation: {x: -90, y: 0, z: -90}
   rightHandRotation: {x: -90, y: 0, z: 90}
   doObjectDespawn: 1
+  growOnObjectSpawn: 1
   despawnMode: 2
   spawnerMode: 1
   despawnTime: 3
