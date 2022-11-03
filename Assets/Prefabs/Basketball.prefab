@@ -205,7 +205,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  m_ThrowVelocityScale: 1.5
+  m_ThrowVelocityScale: 1.2
   m_ThrowAngularVelocityScale: 1
   m_ForceGravityOnDetach: 0
   m_RetainTransformParent: 1
@@ -236,8 +236,8 @@ MonoBehaviour:
   rightHandRotation: {x: 0, y: 0, z: 0}
   doObjectDespawn: 1
   despawnMode: 2
+  spawnerMode: 0
   despawnTime: 5
-  renderer: {fileID: 0}
   isScoreable: 1
   scoreSound: {fileID: 1386167780538966916}
   particles: {fileID: 37846909956845437}
