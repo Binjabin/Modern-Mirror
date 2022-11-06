@@ -22,6 +22,8 @@ public class QueuedObjectSpawner : MonoBehaviour
     [Header("Safe Area")]
     public ObjectSensor safeZone;
 
+    HoopController hoopController;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -34,6 +36,7 @@ public class QueuedObjectSpawner : MonoBehaviour
             }
             
         }
+        hoopController = FindObjectOfType<HoopController>();
     }
 
     // Update is called once per frame
@@ -182,6 +185,7 @@ public class QueuedObjectSpawner : MonoBehaviour
         }
         scoredColors.Add(color);
         GameManager.scoredColors = scoredColors;
+        hoopController.HoopScored();
     }
 
     public void RemoveColor(Color color)

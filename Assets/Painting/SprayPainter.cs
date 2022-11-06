@@ -14,7 +14,7 @@ public class SprayPainter: MonoBehaviour{
     private ActionBasedController controller;
     bool isPressed;
     bool isHeld;
-
+    [SerializeField] LayerMask sprayMask;
     [SerializeField] ParticleSystem sprayEffect;
 
 
@@ -44,17 +44,19 @@ public class SprayPainter: MonoBehaviour{
                 RaycastHit hit;
                 Vector3 raycastDirection = transform.forward;
                 //GetRandomDirectionInCone(spraySpread);
-                Physics.Raycast(transform.position, raycastDirection, out hit, range);
+                Physics.Raycast(transform.position, raycastDirection, out hit, Mathf.Infinity, sprayMask, QueryTriggerInteraction.Ignore);
                 Debug.DrawRay(transform.position, raycastDirection, Color.red);
+                
                 Paintable p;
                 float lerpFactor = (hit.distance) / range;
+                
                 //paintColor.a = Mathf.Lerp(1, 0, lerpFactor);
-                if (hit.collider != null)
+                if (hit.collider != null && hit.distance <= range)
                 {
+                    Debug.Log(Mathf.Round(hit.distance * 100f) / 100f + "/" + range + " : " + hit.collider.gameObject);
                     p = hit.collider.gameObject.GetComponent<Paintable>();
                     if (p != null)
                     {
-                        Debug.Log("a particle paints!");
                         Vector3 pos = hit.point;
                         float paintRadius;
                         if(variesWithDistance)
@@ -71,6 +73,10 @@ public class SprayPainter: MonoBehaviour{
                         }
                         PaintManager.instance.paint(p, pos, paintRadius, hardness, strength, paintColor);
                     }
+                }
+                else
+                {
+                    Debug.Log("Hit nothing!");
                 }
             }
             else

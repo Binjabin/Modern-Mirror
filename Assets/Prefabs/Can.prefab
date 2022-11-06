@@ -5552,7 +5552,10 @@ MonoBehaviour:
   radius: 0.2
   strength: 1
   hardness: 1
-  range: 4
+  range: 0.8
+  sprayMask:
+    serializedVersion: 2
+    m_Bits: 7479
   sprayEffect: {fileID: 3352148488879387359}
 --- !u!1 &3361294182909842672
 GameObject:
