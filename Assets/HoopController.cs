@@ -8,23 +8,35 @@ public class HoopController : MonoBehaviour
     [SerializeField] List<HoopKeyframeInfo> keyframes = new List<HoopKeyframeInfo>();
     bool isMovingTarget;
     Vector3 currentTargetLocation;
-    Vector3 currentTargetRotation;
-    [SerializeField] float toNextKeyframeSpeed = 10f;
-    float distanceToTarget;
+    float currentTargetRotation;
+    
     bool hasReachedStartPoint;
     float currentMoveSpeed;
     bool moveForwards;
     [SerializeField] GameObject hoopScalePoint;
+    
     Vector3 targetScale;
     Vector3 startScale;
+    Vector3 startPosition;
+    Vector3 rotationOffset;
     float timeSinceChange;
-    // Start is called before the first frame update
+    float startRotation;
+    float startHoopOffset;
+
+    //hoop parent
+    [SerializeField] GameObject hoopParent;
+    [SerializeField] float maxHoopOffsetDistance;
+    Vector3 hoopParentStartPosition;
+
+
     void Start()
     {
         currentTargetLocation = transform.localPosition;
-        currentTargetRotation = transform.eulerAngles;
+        currentTargetRotation = transform.localEulerAngles.y;
         startScale = hoopScalePoint.transform.localScale;
+        hoopParentStartPosition = hoopParent.transform.localPosition;
         hoopsScored = 0;
+        rotationOffset = transform.localEulerAngles;
         hasReachedStartPoint = true;
         ToKeyframe(0);
     }
@@ -32,77 +44,49 @@ public class HoopController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
-        distanceToTarget = Vector3.Distance(currentTargetLocation, transform.position);
-        Debug.Log(distanceToTarget);
-        
-        if(timeSinceChange < 2f)
+        float x;
+        if (timeSinceChange <= 1f)
         {
-            hoopScalePoint.transform.localScale = Vector3.Lerp(startScale, targetScale, timeSinceChange/2f);
+            hoopScalePoint.transform.localScale = Vector3.Lerp(startScale, targetScale, timeSinceChange);
+            hoopScalePoint.transform.localScale = targetScale;
+            x = Mathf.Lerp(startHoopOffset, 0f, timeSinceChange);
+            hoopParent.transform.localPosition = hoopParentStartPosition + new Vector3(x, 0f, 0f);
+            transform.localPosition = Vector3.Lerp(startPosition, currentTargetLocation, timeSinceChange);
+            float yRot = Mathf.Lerp(startRotation, currentTargetRotation, timeSinceChange);
+            transform.localEulerAngles = new Vector3(0f, yRot, 0f) + rotationOffset;
+
         }
         else
         {
             hoopScalePoint.transform.localScale = targetScale;
+            x = Mathf.Sin((timeSinceChange-1f) * currentMoveSpeed) * maxHoopOffsetDistance;
+            hoopParent.transform.localPosition = hoopParentStartPosition + new Vector3(x, 0f, 0f);
+            transform.localPosition = currentTargetLocation;
+            transform.localEulerAngles = new Vector3(0f, currentTargetRotation, 0f) + rotationOffset;
         }
+
+
         
-        if(distanceToTarget <= 0.01f)
-        {
-            hasReachedStartPoint = true;
-            currentMoveSpeed = keyframes[hoopsScored].moveSpeed;
-        }
-        if(isMovingTarget)
-        {
-            if(distanceToTarget <= 0.01f)
-            {
-                if(moveForwards)
-                {
-                    moveForwards = false;
-                    currentTargetLocation = keyframes[hoopsScored].endLocation;
-                }
-                else
-                {
-                    moveForwards = true;
-                    currentTargetLocation = keyframes[hoopsScored].startLocation;
-                }
-            }
-            else
-            {
-                transform.localPosition = Vector3.MoveTowards(transform.localPosition, currentTargetLocation, Time.deltaTime * toNextKeyframeSpeed);
-            }
-        }
-        else
-        {
-            if(distanceToTarget <= 0.01f)
-            {
-                //at target
-            }
-            else
-            {
-                transform.localPosition = Vector3.MoveTowards(transform.localPosition, currentTargetLocation, Time.deltaTime * toNextKeyframeSpeed);
-            }
-        }
+
         timeSinceChange += Time.deltaTime;
     }
 
     void ToKeyframe(int frame)
     {
         timeSinceChange = 0f;
-        currentTargetLocation = keyframes[frame].startLocation;
-        if(currentTargetLocation == keyframes[frame].endLocation)
-        {
-            isMovingTarget = false;
-        }
-        else
-        {
-            isMovingTarget = true;
-        }
+        startRotation = currentTargetRotation;
+        currentTargetLocation = keyframes[frame].location;
+        currentTargetRotation = keyframes[frame].rotation;
         hasReachedStartPoint = false;
         moveForwards = true;
-        currentMoveSpeed = toNextKeyframeSpeed;
+        currentMoveSpeed = keyframes[hoopsScored].moveSpeed;
         float scale = keyframes[frame].hoopSize;
         targetScale = new Vector3(scale, scale, scale); 
         startScale = hoopScalePoint.transform.localScale;
-        Debug.Log("To keyframe " + frame + " which is a " + isMovingTarget + "");
+        startHoopOffset = hoopParent.transform.localPosition.x;
+        startPosition = transform.localPosition;
+        
+        Debug.Log("To keyframe " + frame);
 
     }
 
@@ -111,7 +95,7 @@ public class HoopController : MonoBehaviour
         hoopsScored++;
         if(hoopsScored >= keyframes.Count)
         {
-            hoopsScored = keyframes.Count;
+            hoopsScored = keyframes.Count - 1;
         }   
         ToKeyframe(hoopsScored);
     }
