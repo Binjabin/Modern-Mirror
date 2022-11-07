@@ -240,7 +240,6 @@ GameObject:
   - component: {fileID: 8540877695509138930}
   - component: {fileID: 8540877695509138929}
   - component: {fileID: 8540877695509138928}
-  - component: {fileID: 8540877695509138935}
   m_Layer: 11
   m_Name: Football
   m_TagString: Untagged
@@ -468,104 +467,17 @@ MonoBehaviour:
   spawnerMode: 2
   despawnTime: 3
   isScoreable: 1
-  scoreSound: {fileID: 8540877695509138935}
   particles: {fileID: 0}
---- !u!82 &8540877695509138935
-AudioSource:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8540877695509138933}
-  m_Enabled: 1
-  serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: bf3b6017f75ddfa41a9d9510453f637e, type: 3}
-  m_PlayOnAwake: 0
-  m_Volume: 1
-  m_Pitch: 1
-  Loop: 0
-  Mute: 0
-  Spatialize: 0
-  SpatializePostEffects: 0
-  Priority: 128
-  DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
-  Pan2D: 0
-  rolloffMode: 0
-  BypassEffects: 0
-  BypassListenerEffects: 0
-  BypassReverbZones: 0
-  rolloffCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  panLevelCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  spreadCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  reverbZoneMixCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
+  collisionAudio: {fileID: 8300000, guid: 945c356f8992bb60bbbd18374f71e501, type: 3}
+  minCollisionDelay: 0.1
+  minCollisionForce: 0.2
+  shakeAudio: {fileID: 8300000, guid: 3f2aa9301f26f0b8985f3ea618678002, type: 3}
+  minimumShakeSpeed: 0.2
+  pickUpAudio: {fileID: 8300000, guid: b31ef487340f767a79db04adcd0f14a3, type: 3}
+  pickUpAudioLoop: 0
+  scoreHoopAudio: {fileID: 0}
+  activateAudio: {fileID: 0}
+  activateAudioLoop: 0
 --- !u!1 &9067282044904363243
 GameObject:
   m_ObjectHideFlags: 0

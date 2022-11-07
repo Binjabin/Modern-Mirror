@@ -682,8 +682,17 @@ MonoBehaviour:
   spawnerMode: 1
   despawnTime: 3
   isScoreable: 0
-  scoreSound: {fileID: 0}
   particles: {fileID: 0}
+  collisionAudio: {fileID: 8300000, guid: aeecee88fe4ea95438b8294d67e1ad93, type: 3}
+  minCollisionDelay: 0.1
+  minCollisionForce: 0.3
+  shakeAudio: {fileID: 8300000, guid: b17ca2e1b9e18931b9e8ec99217cabf6, type: 3}
+  minimumShakeSpeed: 0.5
+  pickUpAudio: {fileID: 0}
+  pickUpAudioLoop: 0
+  scoreHoopAudio: {fileID: 0}
+  activateAudio: {fileID: 8300000, guid: 6d67a5fbfdf34f62e821714daf6a9807, type: 3}
+  activateAudioLoop: 1
 --- !u!114 &-4964536428622287426
 MonoBehaviour:
   m_ObjectHideFlags: 0

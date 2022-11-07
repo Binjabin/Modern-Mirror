@@ -17,6 +17,8 @@ public enum SpawnerType
 }
 public class InteractableObjectExtentions : MonoBehaviour
 {
+    Rigidbody rb;
+
     [Header("Hands")]
     public XRDirectInteractor[] hands;
 
@@ -53,15 +55,44 @@ public class InteractableObjectExtentions : MonoBehaviour
 
     [Header("Hoop")]
     [SerializeField] bool isScoreable;
-    [SerializeField] AudioSource scoreSound;
     [SerializeField] ParticleSystem particles;
 
     List<ObjectSensor> hoopSensors = new List<ObjectSensor>();
 
+    [Header("Audio")]
+    [SerializeField] AudioClip collisionAudio;
+    AudioSource collisionAudioSource;
+    [SerializeField] float minCollisionDelay;
+    [SerializeField] float minCollisionForce;
+    float lastCollision;
+    [Space]
+    [SerializeField] AudioClip shakeAudio;
+    AudioSource shakeAudioSource;
+    [SerializeField] float minimumShakeSpeed;
+    float xDir;
+    float yDir;
+    float zDir;
+    [Space]
+    [SerializeField] AudioClip pickUpAudio;
+    [SerializeField] bool pickUpAudioLoop;
+    AudioSource pickUpAudioSource;
+    [Space]
+    [SerializeField] AudioClip scoreHoopAudio;
+    AudioSource scoreHoopAudioSource;
+    [Space]
+    [SerializeField] AudioClip activateAudio;
+    [SerializeField] bool activateAudioLoop;
+    AudioSource activateAudioSource;
+    //[Space]
+    //[SerializeField] AudioClip spawnAudio;
+    //AudioSource spawnAudioSource;
+
 
     void Start()
     {
+        rb = GetComponent<Rigidbody>();
         despawnTimer = 0f;
+        lastCollision = 10000f;
         despawning = false;
         hands = FindObjectsOfType<XRDirectInteractor>();
         handNearby = false;
@@ -78,6 +109,85 @@ public class InteractableObjectExtentions : MonoBehaviour
         {
             StartCoroutine(GrowOverTime(1f));
         }
+
+        //Audio setup
+        if(collisionAudio != null)
+        {
+            collisionAudioSource =  gameObject.AddComponent<AudioSource>();
+            collisionAudioSource.playOnAwake = false;
+            collisionAudioSource.clip = collisionAudio;
+        }
+        if(shakeAudio != null)
+        {
+            shakeAudioSource =  gameObject.AddComponent<AudioSource>();
+            shakeAudioSource.playOnAwake = false;
+            shakeAudioSource.clip = shakeAudio;
+        }
+        if(pickUpAudio != null)
+        {
+            pickUpAudioSource =  gameObject.AddComponent<AudioSource>();
+            pickUpAudioSource.playOnAwake = false;
+            pickUpAudioSource.clip = pickUpAudio;
+            pickUpAudioSource.loop = pickUpAudioLoop;
+        }
+        if(scoreHoopAudio != null)
+        {
+            scoreHoopAudioSource =  gameObject.AddComponent<AudioSource>();
+            scoreHoopAudioSource.playOnAwake = false;
+            scoreHoopAudioSource.clip = pickUpAudio;
+        }
+        if(activateAudio != null)
+        {
+            activateAudioSource =  gameObject.AddComponent<AudioSource>();
+            activateAudioSource.playOnAwake = false;
+            activateAudioSource.clip = activateAudio;
+            activateAudioSource.loop = activateAudioLoop;
+        }
+        
+
+    }
+
+    public void Activate()
+    {
+        AttemptPlayAudio(activateAudioSource);
+    }
+
+    public void Deactivate()
+    {
+        AttemptStopAudio(activateAudioSource);
+    }
+
+    public void PickedUp()
+    {
+        hasBeenHeld = true;
+        isHeld = true;
+        handNearby = true;
+        
+        if (dynamicCollisions)
+        {
+            releasedByObject = GetHoldingHand();
+        }
+
+        if (doObjectFlip)
+        {
+            DoObjectFlip();
+        }
+
+        AttemptPlayAudio(pickUpAudioSource);
+    }
+
+
+    public void Released()
+    {
+        isHeld = false;
+        if (dynamicCollisions)
+        {
+            Debug.Log("changed layer");
+            SetLayer(cannotTouchHandsLayer);
+        }
+
+        AttemptStopAudio(pickUpAudioSource);
+            
     }
 
     void GetHoopSensors()
@@ -91,17 +201,9 @@ public class InteractableObjectExtentions : MonoBehaviour
             }
         }
     }
-    // Update is called once per frame
-    public void Released()
-    {
-        isHeld = false;
-        if (dynamicCollisions)
-        {
-            Debug.Log("changed layer");
-            SetLayer(cannotTouchHandsLayer);
-        }
-            
-    }
+
+    
+
     public void LinkSpawner(QueuedObjectSpawner linkThis)
     {
         queuedObjectSpawner = linkThis;
@@ -110,6 +212,7 @@ public class InteractableObjectExtentions : MonoBehaviour
             safeZone = queuedObjectSpawner.safeZone;
         }
     }
+
     public void LinkSpawner(CanSpawner linkThis, int index)
     {
         canSpawner = linkThis;
@@ -119,6 +222,7 @@ public class InteractableObjectExtentions : MonoBehaviour
             canStationIndex = index;
         }
     }
+
     public void LinkSpawner(SingleObjectSpawner linkThis)
     {
         singleSpawner = linkThis;
@@ -127,22 +231,67 @@ public class InteractableObjectExtentions : MonoBehaviour
             safeZone = singleSpawner.safeZone;
         }
     }
-    public void PickedUp()
+
+    bool AttemptPlayAudio(AudioSource source)
     {
-        hasBeenHeld = true;
-        isHeld = true;
-        handNearby = true;
-
-        if (dynamicCollisions)
+        if(source != null)
         {
-            releasedByObject = GetHoldingHand();
+            if(!source.isPlaying)
+            {
+                source.pitch = Random.Range(0.9f, 1.1f);
+                source.volume = Random.Range(0.9f, 1.1f);
+                
+                source.Play();
+                return true;
+            }
         }
+        return false;
+    }
 
-        if (doObjectFlip)
+    bool AttemptPlayAudio(AudioSource source, float volume)
+    {
+        if(source != null)
         {
-            DoObjectFlip();
+            if(!source.isPlaying)
+            {
+                source.pitch = Random.Range(0.9f, 1.1f);
+                source.volume = volume;
+                
+                source.Play();
+                return true;
+            }
         }
+        return false;
+    }
 
+    void AttemptStopAudio(AudioSource source)
+    {
+        if(source != null)
+        {
+            if(source.isPlaying)
+            {
+                source.Stop();
+            }
+        }
+    }
+
+
+
+    private void OnCollisionEnter(Collision other) 
+    {
+        if(lastCollision > minCollisionDelay)
+        {
+            if(rb.velocity.magnitude > minCollisionForce)
+            {
+                float fac = (rb.velocity.magnitude - minCollisionForce) / (minCollisionForce + 2f);
+
+                if(AttemptPlayAudio(collisionAudioSource, fac))
+                {
+                    lastCollision = 0f;
+                }
+            }
+            
+        }
     }
 
     public void ExitHandProximity(GameObject hand)
@@ -163,6 +312,7 @@ public class InteractableObjectExtentions : MonoBehaviour
         }
     }
 
+    
 
     //sets the layer of all child colliders
     void SetLayer(LayerMask layer)
@@ -262,7 +412,7 @@ public class InteractableObjectExtentions : MonoBehaviour
                 Color color = renderer.material.GetColor("_BaseColor");
                 queuedObjectSpawner.ScoreColor(color);
                 particles.Play();
-                scoreSound.Play();
+                AttemptPlayAudio(scoreHoopAudioSource);
             }
         }
         if(spawnerMode == SpawnerType.CanSpawner)
@@ -272,7 +422,7 @@ public class InteractableObjectExtentions : MonoBehaviour
                 
                 Color color = renderer.material.GetColor("_BaseColor");
                 particles.Play();
-                scoreSound.Play();
+                AttemptPlayAudio(scoreHoopAudioSource);
             }
         }
         if(spawnerMode == SpawnerType.CanSpawner)
@@ -282,7 +432,7 @@ public class InteractableObjectExtentions : MonoBehaviour
                 
                 Color color = renderer.material.GetColor("_BaseColor");
                 particles.Play();
-                scoreSound.Play();
+                AttemptPlayAudio(scoreHoopAudioSource);
             }
         }
         
@@ -293,7 +443,7 @@ public class InteractableObjectExtentions : MonoBehaviour
     {
         if (!isHeld)
         {
-            
+            lastCollision += Time.deltaTime;
             if(doObjectDespawn)
             {
                 
@@ -355,14 +505,58 @@ public class InteractableObjectExtentions : MonoBehaviour
                 
                 SetLayer(canTouchHandsLayer);
             }
+
+            int directionsHaveChanged = 0;
+
+            if(xDir != Parity(rb.velocity.x) && xDir != 0f)
+            {
+                directionsHaveChanged += 1;
+            }
+            if(yDir != Parity(rb.velocity.y) && yDir != 0f)
+            {
+                directionsHaveChanged += 1;
+            }
+            if(zDir != Parity(rb.velocity.z) && zDir != 0f)
+            {
+                directionsHaveChanged += 1;
+            }
+
+            if(directionsHaveChanged > 0 && rb.velocity.magnitude > minimumShakeSpeed)
+            {
+                AttemptPlayAudio(shakeAudioSource);
+            }
+            Debug.Log(directionsHaveChanged + " : " + Mathf.Round(rb.velocity.magnitude));
+            //update direction
+            xDir = Parity(rb.velocity.x);
+            yDir = Parity(rb.velocity.y);
+            zDir = Parity(rb.velocity.z);
+
         }
         else
         {
             despawnTimer = 0f;
         }
 
+        //Detect shake
+        
+
     }
 
+    float Parity(float inputFloat)
+    {   
+        if(inputFloat <= -0.1f)
+        {
+            return -1f;
+        }
+        else if(inputFloat >= 0.1f)
+        {
+            return 1f;
+        }
+        else
+        {
+            return 0f;
+        }
+    }
     
     GameObject GetHoldingHand()
     {
