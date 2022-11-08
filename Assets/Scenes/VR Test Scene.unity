@@ -6498,7 +6498,7 @@ MonoBehaviour:
   painting: {fileID: 531308785}
   basketball: {fileID: 1784998124}
   timerText: {fileID: 177326569}
-  basketballTime: 15
+  basketballTime: 90
   timerBeepAudio: {fileID: 8300000, guid: 4108c18f3623bc466ae4386ae72f50c7, type: 3}
   finalTimerBeepAudio: {fileID: 8300000, guid: fcb54cf6a6aea44d6bd42297405e239a, type: 3}
   basketballMusicAudio: {fileID: 8300000, guid: 6218167d5e578364f86b65aa63887db5,
