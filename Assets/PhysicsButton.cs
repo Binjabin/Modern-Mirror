@@ -10,21 +10,40 @@ public class PhysicsButton : MonoBehaviour
 
     bool isPressed;
     Vector3 startPos;
-    ConfigurableJoint joint; 
+    ConfigurableJoint joint;
 
     public UnityEvent onPressed, onReleased;
+
+    [SerializeField] AudioClip buttonPressAudio;
+    AudioSource buttonPressAudioSource;
+    [SerializeField] AudioClip buttonReleaseAudio;
+    AudioSource buttonReleaseAudioSource;
 
     // Start is called before the first frame update
     void Start()
     {
         startPos = transform.localPosition;
         joint = GetComponent<ConfigurableJoint>();
+
+        if (buttonPressAudio != null)
+        {
+            buttonPressAudioSource = gameObject.AddComponent<AudioSource>();
+            buttonPressAudioSource.playOnAwake = false;
+            buttonPressAudioSource.clip = buttonPressAudio;
+        }
+        if (buttonReleaseAudio != null)
+        {
+            buttonReleaseAudioSource = gameObject.AddComponent<AudioSource>();
+            buttonReleaseAudioSource.playOnAwake = false;
+            buttonReleaseAudioSource.clip = buttonReleaseAudio;
+        }
     }
 
     private void Pressed()
     {
         isPressed = true;
         onPressed.Invoke();
+        Audio.AttemptPlayAudio(buttonPressAudioSource);
         
     }
 
@@ -32,6 +51,7 @@ public class PhysicsButton : MonoBehaviour
     {
         isPressed = false;
         onReleased.Invoke();
+        Audio.AttemptPlayAudio(buttonReleaseAudioSource);
     }
 
     void Update()

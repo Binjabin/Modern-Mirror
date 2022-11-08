@@ -134,7 +134,7 @@ public class InteractableObjectExtentions : MonoBehaviour
         {
             scoreHoopAudioSource =  gameObject.AddComponent<AudioSource>();
             scoreHoopAudioSource.playOnAwake = false;
-            scoreHoopAudioSource.clip = pickUpAudio;
+            scoreHoopAudioSource.clip = scoreHoopAudio;
         }
         if(activateAudio != null)
         {
@@ -149,12 +149,12 @@ public class InteractableObjectExtentions : MonoBehaviour
 
     public void Activate()
     {
-        AttemptPlayAudio(activateAudioSource);
+        Audio.AttemptPlayAudio(activateAudioSource);
     }
 
     public void Deactivate()
     {
-        AttemptStopAudio(activateAudioSource);
+        Audio.AttemptStopAudio(activateAudioSource);
     }
 
     public void PickedUp()
@@ -173,7 +173,7 @@ public class InteractableObjectExtentions : MonoBehaviour
             DoObjectFlip();
         }
 
-        AttemptPlayAudio(pickUpAudioSource);
+        Audio.AttemptPlayAudio(pickUpAudioSource);
     }
 
 
@@ -186,7 +186,7 @@ public class InteractableObjectExtentions : MonoBehaviour
             SetLayer(cannotTouchHandsLayer);
         }
 
-        AttemptStopAudio(pickUpAudioSource);
+        Audio.AttemptStopAudio(pickUpAudioSource);
             
     }
 
@@ -232,51 +232,6 @@ public class InteractableObjectExtentions : MonoBehaviour
         }
     }
 
-    bool AttemptPlayAudio(AudioSource source)
-    {
-        if(source != null)
-        {
-            if(!source.isPlaying)
-            {
-                source.pitch = Random.Range(0.9f, 1.1f);
-                source.volume = Random.Range(0.9f, 1.1f);
-                
-                source.Play();
-                return true;
-            }
-        }
-        return false;
-    }
-
-    bool AttemptPlayAudio(AudioSource source, float volume)
-    {
-        if(source != null)
-        {
-            if(!source.isPlaying)
-            {
-                source.pitch = Random.Range(0.9f, 1.1f);
-                source.volume = volume;
-                
-                source.Play();
-                return true;
-            }
-        }
-        return false;
-    }
-
-    void AttemptStopAudio(AudioSource source)
-    {
-        if(source != null)
-        {
-            if(source.isPlaying)
-            {
-                source.Stop();
-            }
-        }
-    }
-
-
-
     private void OnCollisionEnter(Collision other) 
     {
         if(lastCollision > minCollisionDelay)
@@ -285,7 +240,7 @@ public class InteractableObjectExtentions : MonoBehaviour
             {
                 float fac = (rb.velocity.magnitude - minCollisionForce) / (minCollisionForce + 2f);
 
-                if(AttemptPlayAudio(collisionAudioSource, fac))
+                if(Audio.AttemptPlayAudio(collisionAudioSource, fac))
                 {
                     lastCollision = 0f;
                 }
@@ -412,7 +367,7 @@ public class InteractableObjectExtentions : MonoBehaviour
                 Color color = renderer.material.GetColor("_BaseColor");
                 queuedObjectSpawner.ScoreColor(color);
                 particles.Play();
-                AttemptPlayAudio(scoreHoopAudioSource);
+                Audio.AttemptPlayAudio(scoreHoopAudioSource);
             }
         }
         if(spawnerMode == SpawnerType.CanSpawner)
@@ -422,7 +377,7 @@ public class InteractableObjectExtentions : MonoBehaviour
                 
                 Color color = renderer.material.GetColor("_BaseColor");
                 particles.Play();
-                AttemptPlayAudio(scoreHoopAudioSource);
+                Audio.AttemptPlayAudio(scoreHoopAudioSource);
             }
         }
         if(spawnerMode == SpawnerType.CanSpawner)
@@ -432,7 +387,7 @@ public class InteractableObjectExtentions : MonoBehaviour
                 
                 Color color = renderer.material.GetColor("_BaseColor");
                 particles.Play();
-                AttemptPlayAudio(scoreHoopAudioSource);
+                Audio.AttemptPlayAudio(scoreHoopAudioSource);
             }
         }
         
@@ -444,22 +399,22 @@ public class InteractableObjectExtentions : MonoBehaviour
         if (!isHeld)
         {
             lastCollision += Time.deltaTime;
-            if(doObjectDespawn)
+            if (doObjectDespawn)
             {
-                
-                if(despawnMode == DespawnMode.TimeAfterSpawn)
+
+                if (despawnMode == DespawnMode.TimeAfterSpawn)
                 {
                     despawnTimer += Time.deltaTime;
                 }
-                else if(despawnMode == DespawnMode.TimeAfterReleased)
+                else if (despawnMode == DespawnMode.TimeAfterReleased)
                 {
-                    if(isHeld)
+                    if (isHeld)
                     {
                         despawnTimer = 0f;
                     }
                     else
                     {
-                        if(hasBeenHeld)
+                        if (hasBeenHeld)
                         {
                             despawnTimer += Time.deltaTime;
                         }
@@ -467,19 +422,19 @@ public class InteractableObjectExtentions : MonoBehaviour
                         {
                             despawnTimer = 0f;
                         }
-                        
+
                     }
                 }
-                
-                else if(despawnMode == DespawnMode.TimeAfterLeaveArea)
+
+                else if (despawnMode == DespawnMode.TimeAfterLeaveArea)
                 {
-                    if(safeZone.objectsInZone.Contains(this))
+                    if (safeZone.objectsInZone.Contains(this))
                     {
                         despawnTimer = 0f;
                     }
                     else
                     {
-                        if(isHeld)
+                        if (isHeld)
                         {
                             despawnTimer = 0f;
                         }
@@ -487,58 +442,58 @@ public class InteractableObjectExtentions : MonoBehaviour
                         {
                             despawnTimer += Time.deltaTime;
                         }
-                        
+
                     }
-                    
+
                 }
 
 
-                if(despawnTimer >= despawnTime && !despawning)
+                if (despawnTimer >= despawnTime && !despawning)
                 {
                     StartCoroutine(DespawnObjectWithDelay(0.5f));
                     despawning = true;
                 }
             }
-            
+
             if (!handNearby)
             {
-                
+
                 SetLayer(canTouchHandsLayer);
             }
 
+
+
+        }
+        else
+        {
+            despawnTimer = 0f;
+
             int directionsHaveChanged = 0;
 
-            if(xDir != Parity(rb.velocity.x) && xDir != 0f)
+            if (xDir != Parity(rb.velocity.x) && xDir != 0f)
             {
                 directionsHaveChanged += 1;
             }
-            if(yDir != Parity(rb.velocity.y) && yDir != 0f)
+            if (yDir != Parity(rb.velocity.y) && yDir != 0f)
             {
                 directionsHaveChanged += 1;
             }
-            if(zDir != Parity(rb.velocity.z) && zDir != 0f)
+            if (zDir != Parity(rb.velocity.z) && zDir != 0f)
             {
                 directionsHaveChanged += 1;
             }
 
-            if(directionsHaveChanged > 0 && rb.velocity.magnitude > minimumShakeSpeed)
+            if (directionsHaveChanged > 0 && rb.velocity.magnitude > minimumShakeSpeed)
             {
-                AttemptPlayAudio(shakeAudioSource);
+                Audio.AttemptPlayAudio(shakeAudioSource);
             }
             Debug.Log(directionsHaveChanged + " : " + Mathf.Round(rb.velocity.magnitude));
             //update direction
             xDir = Parity(rb.velocity.x);
             yDir = Parity(rb.velocity.y);
             zDir = Parity(rb.velocity.z);
-
-        }
-        else
-        {
-            despawnTimer = 0f;
         }
 
-        //Detect shake
-        
 
     }
 
