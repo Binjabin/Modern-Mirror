@@ -569,12 +569,36 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 3352148488075351760}
+        m_TargetAssemblyTypeName: InteractableObjectExtentions, Assembly-CSharp
+        m_MethodName: Activate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_Deactivated:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 3352148489723128227}
         m_TargetAssemblyTypeName: SprayPainter, Assembly-CSharp
         m_MethodName: Deactivated
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 3352148488075351760}
+        m_TargetAssemblyTypeName: InteractableObjectExtentions, Assembly-CSharp
+        m_MethodName: Deactivate
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -687,12 +711,14 @@ MonoBehaviour:
   minCollisionDelay: 0.1
   minCollisionForce: 0.3
   shakeAudio: {fileID: 8300000, guid: b17ca2e1b9e18931b9e8ec99217cabf6, type: 3}
-  minimumShakeSpeed: 0.5
+  minimumShakeSpeed: 2.5
   pickUpAudio: {fileID: 0}
   pickUpAudioLoop: 0
   scoreHoopAudio: {fileID: 0}
   activateAudio: {fileID: 8300000, guid: 6d67a5fbfdf34f62e821714daf6a9807, type: 3}
   activateAudioLoop: 1
+  hapticsWhileActivated: 1
+  hapticsIntensity: 0.01
 --- !u!114 &-4964536428622287426
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -263,7 +263,6 @@ MonoBehaviour:
   spawnerMode: 0
   despawnTime: 5
   isScoreable: 1
-  scoreSound: {fileID: 0}
   particles: {fileID: 37846909956845437}
   collisionAudio: {fileID: 8300000, guid: 7700c87858274df3d9ebc03609581148, type: 3}
   minCollisionDelay: 0.05

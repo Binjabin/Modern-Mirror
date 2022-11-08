@@ -59,7 +59,7 @@ public class InteractableObjectExtentions : MonoBehaviour
 
     List<ObjectSensor> hoopSensors = new List<ObjectSensor>();
 
-    [Header("Audio")]
+    [Header("Audio + Effects")]
     [SerializeField] AudioClip collisionAudio;
     AudioSource collisionAudioSource;
     [SerializeField] float minCollisionDelay;
@@ -72,6 +72,8 @@ public class InteractableObjectExtentions : MonoBehaviour
     float xDir;
     float yDir;
     float zDir;
+    Rigidbody handRigidbody;
+    GameObject physicsHandObject;
     [Space]
     [SerializeField] AudioClip pickUpAudio;
     [SerializeField] bool pickUpAudioLoop;
@@ -83,10 +85,10 @@ public class InteractableObjectExtentions : MonoBehaviour
     [SerializeField] AudioClip activateAudio;
     [SerializeField] bool activateAudioLoop;
     AudioSource activateAudioSource;
-    //[Space]
-    //[SerializeField] AudioClip spawnAudio;
-    //AudioSource spawnAudioSource;
-
+    [SerializeField] bool hapticsWhileActivated;
+    [SerializeField] float hapticsIntensity;
+    ActionBasedController currentController;
+    bool isActivated;
 
     void Start()
     {
@@ -149,11 +151,14 @@ public class InteractableObjectExtentions : MonoBehaviour
 
     public void Activate()
     {
+        isActivated = true;
         Audio.AttemptPlayAudio(activateAudioSource);
+        
     }
 
     public void Deactivate()
     {
+        isActivated = false;
         Audio.AttemptStopAudio(activateAudioSource);
     }
 
@@ -162,10 +167,12 @@ public class InteractableObjectExtentions : MonoBehaviour
         hasBeenHeld = true;
         isHeld = true;
         handNearby = true;
-        
-        if (dynamicCollisions)
+        releasedByObject = GetHoldingHand();
+        currentController = releasedByObject.GetComponent<ActionBasedController>();
+        if (shakeAudio != null)
         {
-            releasedByObject = GetHoldingHand();
+            physicsHandObject = releasedByObject.GetComponent<PhysicsHandReference>().physicsHand.gameObject;
+            handRigidbody = physicsHandObject.GetComponent<Rigidbody>();
         }
 
         if (doObjectFlip)
@@ -466,32 +473,44 @@ public class InteractableObjectExtentions : MonoBehaviour
         }
         else
         {
-            despawnTimer = 0f;
+            if (shakeAudio != null)
+            {
 
-            int directionsHaveChanged = 0;
+                despawnTimer = 0f;
 
-            if (xDir != Parity(rb.velocity.x) && xDir != 0f)
-            {
-                directionsHaveChanged += 1;
-            }
-            if (yDir != Parity(rb.velocity.y) && yDir != 0f)
-            {
-                directionsHaveChanged += 1;
-            }
-            if (zDir != Parity(rb.velocity.z) && zDir != 0f)
-            {
-                directionsHaveChanged += 1;
+                int directionsHaveChanged = 0;
+
+                if (xDir != Parity(handRigidbody.velocity.x) && Mathf.Abs(xDir) < 0.1f)
+                {
+                    directionsHaveChanged += 1;
+                }
+                if (yDir != Parity(handRigidbody.velocity.y) && Mathf.Abs(yDir) < 0.1f)
+                {
+                    directionsHaveChanged += 1;
+                }
+                if (zDir != Parity(handRigidbody.velocity.z) && Mathf.Abs(zDir) < 0.1f)
+                {
+                    directionsHaveChanged += 1;
+                }
+
+                if (directionsHaveChanged > 0 && handRigidbody.velocity.magnitude > minimumShakeSpeed)
+                {
+                    Audio.AttemptPlayAudio(shakeAudioSource);
+                }
+                //update direction
+                xDir = Parity(handRigidbody.velocity.x);
+                yDir = Parity(handRigidbody.velocity.y);
+                zDir = Parity(handRigidbody.velocity.z);
             }
 
-            if (directionsHaveChanged > 0 && rb.velocity.magnitude > minimumShakeSpeed)
+            if (isActivated)
             {
-                Audio.AttemptPlayAudio(shakeAudioSource);
+                if (hapticsWhileActivated)
+                {
+                    currentController.SendHapticImpulse(hapticsIntensity, Time.deltaTime);
+                }
             }
-            Debug.Log(directionsHaveChanged + " : " + Mathf.Round(rb.velocity.magnitude));
-            //update direction
-            xDir = Parity(rb.velocity.x);
-            yDir = Parity(rb.velocity.y);
-            zDir = Parity(rb.velocity.z);
+
         }
 
 

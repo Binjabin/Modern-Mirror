@@ -29,6 +29,7 @@ public class PhysicsHand : MonoBehaviour
 		colliders = GetComponentsInChildren<Collider>();
 
 		followTarget = followObject.transform;
+		followObject.GetComponent<PhysicsHandReference>().physicsHand = this;
 		rb = GetComponent<Rigidbody>();
 		rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
 		rb.interpolation = RigidbodyInterpolation.Interpolate;
