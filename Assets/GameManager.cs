@@ -8,11 +8,15 @@ public class GameManager : MonoBehaviour
     public static List<Color> scoredColors = new List<Color>();
     public GameObject painting;
     public GameObject basketball;
+    public GameObject introduction;
+    public GameObject ending;
 
     public TMP_Text timerText;
     public float basketballTime;
     float basketballTimeRemaining;
     bool inBasketball;
+
+    [SerializeField] GameObject shoe;
 
     [Header("Sound")]
     [SerializeField] AudioClip timerBeepAudio;
@@ -24,8 +28,12 @@ public class GameManager : MonoBehaviour
     [SerializeField] AudioClip paintingMusicAudio;
     AudioSource paintingMusicAudioSource;
 
+
+
     public void ToPainting()
     {
+        introduction.SetActive(false);
+        ending.SetActive(false);
         inBasketball = false;
         painting.SetActive(true);
         basketball.SetActive(false);
@@ -39,13 +47,22 @@ public class GameManager : MonoBehaviour
         Audio.AttemptStopAudio(basketballMusicAudioSource);
     }
 
-    public void Start()
+    IEnumerator WaitToStart()
+    {
+        yield return new WaitForSeconds(1f);
+        ToIntroduction();
+    }
+
+    public void ToBasketball()
     {
         inBasketball = true;
+        introduction.SetActive(false);
         painting.SetActive(false);
         basketball.SetActive(true);
+        ending.SetActive(false);
 
         basketballTimeRemaining = basketballTime;
+
         var singleSpawners = FindObjectsOfType<SingleObjectSpawner>(false);
         foreach (SingleObjectSpawner spawner in singleSpawners)
         {
@@ -81,6 +98,52 @@ public class GameManager : MonoBehaviour
         }
 
         Audio.AttemptPlayAudio(basketballMusicAudioSource, 0.2f, 1f);
+    }
+
+    public void Start()
+    {
+        inBasketball = false;
+        painting.SetActive(false);
+        basketball.SetActive(false);
+        introduction.SetActive(false);
+        ending.SetActive(false);
+        StartCoroutine(WaitToStart());
+    }
+
+    public void ToIntroduction()
+    {
+        inBasketball = false;
+        painting.SetActive(false);
+        basketball.SetActive(false);
+        introduction.SetActive(true);
+        ending.SetActive(false);
+        var singleSpawners = FindObjectsOfType<SingleObjectSpawner>(false);
+        foreach (SingleObjectSpawner spawner in singleSpawners)
+        {
+            spawner.RespawnObject();
+        }
+    }
+
+    public void ToEnding()
+    {
+        inBasketball = false;
+        painting.SetActive(false);
+        basketball.SetActive(false);
+        introduction.SetActive(false);
+        ending.SetActive(true);
+        var singleSpawners = FindObjectsOfType<SingleObjectSpawner>(false);
+        foreach (SingleObjectSpawner spawner in singleSpawners)
+        {
+            if(spawner.isShoe)
+            {
+                spawner.spawnPrefab = shoe;
+            }
+            spawner.RespawnObject();
+        }
+        //spawn shoes
+
+
+
     }
 
     private void Update()

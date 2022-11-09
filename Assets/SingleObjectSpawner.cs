@@ -5,10 +5,13 @@ using UnityEngine;
 public class SingleObjectSpawner : MonoBehaviour
 {
     [SerializeField] Transform spawnPoint;
-    [SerializeField] GameObject spawnPrefab;
+    public GameObject spawnPrefab;
     GameObject currentObject;
     public ObjectSensor safeZone;
-    
+
+    public bool isShoe;
+    [SerializeField] bool isLeft;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -25,8 +28,27 @@ public class SingleObjectSpawner : MonoBehaviour
     {
         
         GameObject spawnedCan = Instantiate(spawnPrefab, spawnPoint.position, Quaternion.identity);
+        spawnedCan.transform.parent = transform.parent;
         spawnedCan.GetComponent<InteractableObjectExtentions>().LinkSpawner(this);
-        
+
+        if(isShoe)
+        {
+            
+            foreach(Paintable paintable in GetComponentsInChildren<Paintable>())
+            {
+                Destroy(paintable);
+            }
+            Destroy(spawnedCan.GetComponent<ShoeRotate>());
+            if (isLeft)
+            {
+                spawnedCan.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
+            }
+            else
+            {
+                spawnedCan.transform.localScale = new Vector3(-0.2f, 0.2f, 0.2f);
+            }
+        }
+
     }
 
 }
