@@ -90,6 +90,7 @@ public class InteractableObjectExtentions : MonoBehaviour
     ActionBasedController currentController;
     bool isActivated;
 
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();

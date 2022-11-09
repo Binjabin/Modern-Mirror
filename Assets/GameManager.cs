@@ -136,7 +136,7 @@ public class GameManager : MonoBehaviour
         {
             if(spawner.isShoe)
             {
-                spawner.spawnPrefab = shoe;
+                spawner.originalShoe = shoe;
             }
             spawner.RespawnObject();
         }

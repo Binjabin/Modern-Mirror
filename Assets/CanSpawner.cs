@@ -31,6 +31,7 @@ public class CanSpawner : MonoBehaviour
                 float fac = Random.Range(0.0f, 1.0f);
                 Color color = noCanFallbackColors.Evaluate(fac);
                 GameObject spawnedCan = Instantiate(canPrefab, spawnPoints[pointIndex].position, Quaternion.identity);
+                spawnedCan.transform.parent = transform.parent;
                 spawnedCan.GetComponent<InteractableObjectExtentions>().LinkSpawner(this, pointIndex);
                 spawnedCan.GetComponent<SprayColor>().SetColor(color);
 
@@ -76,6 +77,7 @@ public class CanSpawner : MonoBehaviour
         }
         
         GameObject spawnedCan = Instantiate(canPrefab, spawnPoints[index].position, Quaternion.identity);
+        spawnedCan.transform.parent = transform.parent;
         spawnedCan.GetComponent<SprayColor>().SetColor(color);
         spawnedCan.GetComponent<InteractableObjectExtentions>().LinkSpawner(this, index);
     }
