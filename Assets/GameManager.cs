@@ -16,7 +16,10 @@ public class GameManager : MonoBehaviour
     float basketballTimeRemaining;
     bool inBasketball;
 
+    bool basketballIntroDone = false;
+
     [SerializeField] GameObject shoe;
+
 
     [Header("Sound")]
     [SerializeField] AudioClip timerBeepAudio;
@@ -28,7 +31,20 @@ public class GameManager : MonoBehaviour
     [SerializeField] AudioClip paintingMusicAudio;
     AudioSource paintingMusicAudioSource;
 
+    [Header("NPC")]
+    NPC npc;
+    float lastCheck;
+    [SerializeField] Transform npcLocation;
+    AudioSource voiceLines;
+    
+    [SerializeField] List<AudioClip> gameIntro = new List<AudioClip>();
+    [SerializeField] List<AudioClip> basketballIntro = new List<AudioClip>();
+    [SerializeField] List<AudioClip> basketballCountdown = new List<AudioClip>();
+    [SerializeField] List<AudioClip> paintingIntro = new List<AudioClip>();
+    [SerializeField] List<AudioClip> outro = new List<AudioClip>();
 
+    [SerializeField] List<AudioClip> basketballScore = new List<AudioClip>();
+    [SerializeField] List<AudioClip> paintingComment = new List<AudioClip>();
 
     public void ToPainting()
     {
@@ -43,14 +59,101 @@ public class GameManager : MonoBehaviour
         {
             spawner.RespawnObject();
         }
-        Audio.AttemptPlayAudio(paintingMusicAudioSource, 0.2f, 1f);
-        Audio.AttemptStopAudio(basketballMusicAudioSource);
+        StartCoroutine(PaintingIntroduction());
     }
+
+
 
     IEnumerator WaitToStart()
     {
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(0.2f);
         ToIntroduction();
+    }
+
+    IEnumerator GameIntroduction()
+    {
+        foreach(AudioClip clip in gameIntro)
+        {
+            if(introduction.active)
+            {
+                yield return new WaitForSeconds(3f);
+                voiceLines.clip = clip;
+                voiceLines.Play();
+                while(voiceLines.isPlaying)
+                {
+                    yield return null;
+                    
+                }
+            }
+        }
+    }
+
+    IEnumerator Outro()
+    {
+        foreach(AudioClip clip in outro)
+        {
+            if(ending.active)
+            {
+                yield return new WaitForSeconds(3f);
+                voiceLines.clip = clip;
+                voiceLines.Play();
+                while(voiceLines.isPlaying)
+                {
+                    yield return null;
+                    
+                }
+            }
+        }
+    }
+
+    IEnumerator BasketballIntroduction()
+    {
+        foreach(AudioClip clip in basketballIntro)
+        {
+            if(basketball.active)
+            {
+                yield return new WaitForSeconds(1.5f);
+                voiceLines.clip = clip;
+                voiceLines.Play();
+                while(voiceLines.isPlaying)
+                {
+                    yield return null;
+                }
+            }
+        }
+        foreach(AudioClip clip in basketballCountdown)
+        {
+            if(basketball.active)
+            {
+                yield return new WaitForSeconds(1f);
+                voiceLines.clip = clip;
+                voiceLines.Play();
+            }
+        }
+        FindObjectOfType<QueuedObjectSpawner>().StartSpawning();
+        basketballIntroDone = true;
+        Audio.AttemptPlayAudio(basketballMusicAudioSource, 0.2f, 1f);
+    }
+
+    IEnumerator PaintingIntroduction()
+    {
+        Audio.AttemptPlayAudio(paintingMusicAudioSource, 0.2f, 1f);
+        foreach(AudioClip clip in paintingIntro)
+        {
+            if(painting.active)
+            {
+                yield return new WaitForSeconds(3f);
+                voiceLines.clip = clip;
+                voiceLines.Play();
+                while(voiceLines.isPlaying)
+                {
+                    yield return null;
+                    
+                }
+            }
+        }
+        
+        Audio.AttemptStopAudio(basketballMusicAudioSource);
     }
 
     public void ToBasketball()
@@ -69,6 +172,7 @@ public class GameManager : MonoBehaviour
             spawner.RespawnObject();
         }
 
+        
 
         if (timerBeepAudio != null)
         {
@@ -97,7 +201,7 @@ public class GameManager : MonoBehaviour
             paintingMusicAudioSource.loop = true;
         }
 
-        Audio.AttemptPlayAudio(basketballMusicAudioSource, 0.2f, 1f);
+        StartCoroutine(BasketballIntroduction());
     }
 
     public void Start()
@@ -108,6 +212,8 @@ public class GameManager : MonoBehaviour
         introduction.SetActive(false);
         ending.SetActive(false);
         StartCoroutine(WaitToStart());
+        voiceLines = npcLocation.gameObject.AddComponent<AudioSource>();
+        voiceLines.playOnAwake = false;
     }
 
     public void ToIntroduction()
@@ -122,6 +228,7 @@ public class GameManager : MonoBehaviour
         {
             spawner.RespawnObject();
         }
+        StartCoroutine(GameIntroduction());
     }
 
     public void ToEnding()
@@ -140,6 +247,7 @@ public class GameManager : MonoBehaviour
             }
             spawner.RespawnObject();
         }
+        StartCoroutine(Outro());
         //spawn shoes
 
 
@@ -148,7 +256,7 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if (inBasketball)
+        if (inBasketball && basketballIntroDone)
         {
             basketballTimeRemaining -= Time.deltaTime;
             float secs = Mathf.Round(basketballTimeRemaining % 60);
@@ -175,6 +283,20 @@ public class GameManager : MonoBehaviour
                 ToPainting();
 
             }
+        }
+
+        if(npc == null)
+        {
+            lastCheck += Time.deltaTime;
+            if(lastCheck > 1f)
+            {
+                npc = FindObjectOfType<NPC>();
+                lastCheck = 0f;
+            }
+        }
+        else
+        {
+            npcLocation.position = npc.transform.position;
         }
 
     }

@@ -46,7 +46,7 @@ public class InteractableObjectExtentions : MonoBehaviour
     MeshRenderer renderer;
     bool despawning;
 
-    float despawnTimer;
+    public float despawnTimer;
     QueuedObjectSpawner queuedObjectSpawner;
     CanSpawner canSpawner;
     SingleObjectSpawner singleSpawner;
