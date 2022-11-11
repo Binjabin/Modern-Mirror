@@ -8652,8 +8652,8 @@ MonoBehaviour:
   npcLocation: {fileID: 2080190313}
   gameIntro:
   - {fileID: 8300000, guid: 08074a77aaf97fce88459053c2996af7, type: 3}
-  - {fileID: 8300000, guid: 4f5d1c097f19747ad899de5bb267459e, type: 3}
   - {fileID: 8300000, guid: d6c58f9b21766d13c97c20bbc2e328eb, type: 3}
+  - {fileID: 8300000, guid: 4f5d1c097f19747ad899de5bb267459e, type: 3}
   - {fileID: 8300000, guid: 5a602e5ccf70e8746b41f1ae7c423c54, type: 3}
   - {fileID: 8300000, guid: be62cb88acad07e0c889e9e7bf3ba10d, type: 3}
   - {fileID: 8300000, guid: 291c345caea5eab0cbe733f50c952a59, type: 3}
