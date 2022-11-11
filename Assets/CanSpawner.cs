@@ -44,6 +44,7 @@ public class CanSpawner : MonoBehaviour
             foreach (Color color in colorsToSpawn)
             {
                 GameObject spawnedCan = Instantiate(canPrefab, spawnPoints[pointIndex].position, Quaternion.identity);
+                spawnedCan.transform.parent = transform.parent;
                 Debug.Log(spawnedCan);
                 spawnedCan.GetComponent<SprayColor>().SetColor(color);
                 spawnedCan.GetComponent<InteractableObjectExtentions>().LinkSpawner(this, pointIndex);
