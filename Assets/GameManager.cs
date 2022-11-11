@@ -46,6 +46,26 @@ public class GameManager : MonoBehaviour
     [SerializeField] List<AudioClip> basketballScore = new List<AudioClip>();
     [SerializeField] List<AudioClip> paintingComment = new List<AudioClip>();
 
+
+    public RenderTexture picture;
+
+
+    public void SaveTexture()
+    {
+        byte[] bytes = toTexture2D(picture).EncodeToPNG();
+        //System.IO.File.WriteAllBytes("C:/Users/bsmith2021/Exports/ShoePicture ("+ System.DateTime.Now + ").png", bytes);
+        System.IO.File.WriteAllBytes("C:/Users/bsmith2021/Exports/ShoePicture.png", bytes);
+    }
+    Texture2D toTexture2D(RenderTexture rTex)
+    {
+        Texture2D tex = new Texture2D(4096, 4096, TextureFormat.RGB24, false);
+        RenderTexture.active = rTex;
+        tex.ReadPixels(new Rect(0, 0, rTex.width, rTex.height), 0, 0);
+        tex.Apply();
+        Destroy(tex);//prevents memory leak
+        return tex;
+    }
+
     public void ToPainting()
     {
         introduction.SetActive(false);
@@ -62,6 +82,12 @@ public class GameManager : MonoBehaviour
         StartCoroutine(PaintingIntroduction());
     }
 
+    IEnumerator TakePhoto()
+    {
+        yield return new WaitForSeconds(1f);
+        SaveTexture();
+    }
+
 
 
     IEnumerator WaitToStart()
@@ -72,11 +98,13 @@ public class GameManager : MonoBehaviour
 
     IEnumerator GameIntroduction()
     {
+        Audio.AttemptStopAudio(voiceLines);
         foreach(AudioClip clip in gameIntro)
         {
+            yield return new WaitForSeconds(1.5f);
             if(introduction.active)
             {
-                yield return new WaitForSeconds(3f);
+                
                 voiceLines.clip = clip;
                 voiceLines.Play();
                 while(voiceLines.isPlaying)
@@ -90,11 +118,14 @@ public class GameManager : MonoBehaviour
 
     IEnumerator Outro()
     {
-        foreach(AudioClip clip in outro)
+        Audio.AttemptStopAudio(voiceLines);
+        Audio.AttemptStopAudio(paintingMusicAudioSource);
+        StartCoroutine(TakePhoto());
+        foreach (AudioClip clip in outro)
         {
+            yield return new WaitForSeconds(1.5f);
             if(ending.active)
             {
-                yield return new WaitForSeconds(3f);
                 voiceLines.clip = clip;
                 voiceLines.Play();
                 while(voiceLines.isPlaying)
@@ -104,15 +135,17 @@ public class GameManager : MonoBehaviour
                 }
             }
         }
+       
     }
 
     IEnumerator BasketballIntroduction()
     {
+        Audio.AttemptStopAudio(voiceLines);
         foreach(AudioClip clip in basketballIntro)
         {
+            yield return new WaitForSeconds(1.5f);
             if(basketball.active)
             {
-                yield return new WaitForSeconds(1.5f);
                 voiceLines.clip = clip;
                 voiceLines.Play();
                 while(voiceLines.isPlaying)
@@ -123,9 +156,9 @@ public class GameManager : MonoBehaviour
         }
         foreach(AudioClip clip in basketballCountdown)
         {
+            yield return new WaitForSeconds(1f);
             if(basketball.active)
             {
-                yield return new WaitForSeconds(1f);
                 voiceLines.clip = clip;
                 voiceLines.Play();
             }
@@ -137,12 +170,14 @@ public class GameManager : MonoBehaviour
 
     IEnumerator PaintingIntroduction()
     {
+        Audio.AttemptStopAudio(voiceLines);
+        Audio.AttemptStopAudio(basketballMusicAudioSource);
         Audio.AttemptPlayAudio(paintingMusicAudioSource, 0.2f, 1f);
         foreach(AudioClip clip in paintingIntro)
         {
+            yield return new WaitForSeconds(1.5f);
             if(painting.active)
             {
-                yield return new WaitForSeconds(3f);
                 voiceLines.clip = clip;
                 voiceLines.Play();
                 while(voiceLines.isPlaying)
@@ -153,7 +188,7 @@ public class GameManager : MonoBehaviour
             }
         }
         
-        Audio.AttemptStopAudio(basketballMusicAudioSource);
+        
     }
 
     public void ToBasketball()
