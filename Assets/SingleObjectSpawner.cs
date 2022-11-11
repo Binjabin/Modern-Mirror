@@ -27,7 +27,7 @@ public class SingleObjectSpawner : MonoBehaviour
     public void RespawnObject()
     {
         
-        GameObject spawnedCan = Instantiate(spawnPrefab, spawnPoint.position, Quaternion.identity);
+        GameObject spawnedCan = Instantiate(spawnPrefab, spawnPoint.position, spawnPoint.rotation);
         spawnedCan.transform.parent = transform.parent;
 
         spawnedCan.GetComponent<InteractableObjectExtentions>().LinkSpawner(this);

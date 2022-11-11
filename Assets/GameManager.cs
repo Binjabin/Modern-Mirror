@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using System.IO;
 
 public class GameManager : MonoBehaviour
 {
@@ -54,7 +55,15 @@ public class GameManager : MonoBehaviour
     {
         byte[] bytes = toTexture2D(picture).EncodeToPNG();
         //System.IO.File.WriteAllBytes("C:/Users/bsmith2021/Exports/ShoePicture ("+ System.DateTime.Now + ").png", bytes);
-        System.IO.File.WriteAllBytes("C:/Users/bsmith2021/Exports/ShoePicture.png", bytes);
+        var code = Random.Range(0, 1000000);
+        var path = Application.persistentDataPath + "/ShoePictures/Picture_" + code + ".png";
+        
+        Debug.Log("attempted write to" + path);
+        System.IO.FileInfo file = new System.IO.FileInfo(path);
+        file.Directory.Create();
+        File.WriteAllBytes(file.FullName, bytes);
+        Debug.Log("successfully written to" + path);
+
     }
     Texture2D toTexture2D(RenderTexture rTex)
     {
