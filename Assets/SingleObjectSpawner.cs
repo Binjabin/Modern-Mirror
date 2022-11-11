@@ -10,7 +10,6 @@ public class SingleObjectSpawner : MonoBehaviour
     public ObjectSensor safeZone;
 
     public bool isShoe;
-    [SerializeField] bool isLeft;
     public GameObject originalShoe;
 
     // Start is called before the first frame update
@@ -38,21 +37,13 @@ public class SingleObjectSpawner : MonoBehaviour
         {
             
             Destroy(spawnedCan.GetComponent<ShoeRotate>());
-            if (isLeft)
-            {
-                spawnedCan.transform.localScale = new Vector3(0.06f, 0.06f, 0.06f);
-            }
-            else
-            {
-                spawnedCan.transform.localScale = new Vector3(-0.06f, 0.06f, 0.06f);
-            }
             foreach (Transform child in originalShoe.transform)
             {
                 var copied = Instantiate(child.gameObject);
                 copied.transform.parent = spawnedCan.transform;
-                transform.localPosition = new Vector3(0, 0, 0);
-                transform.localEulerAngles = new Vector3(-90, 0, 0);
-                transform.localScale = child.localScale;
+                copied.transform.localPosition = child.localPosition;
+                copied.transform.localEulerAngles = child.localEulerAngles;
+                copied.transform.localScale = child.localScale;
                 
             }
         }

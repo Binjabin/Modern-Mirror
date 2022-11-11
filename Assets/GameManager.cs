@@ -28,8 +28,23 @@ public class GameManager : MonoBehaviour
     [SerializeField] AudioClip paintingMusicAudio;
     AudioSource paintingMusicAudioSource;
 
+    public RenderTexture picture;
 
-
+    public void SaveTexture()
+    {
+        byte[] bytes = toTexture2D(picture).EncodeToPNG();
+        //System.IO.File.WriteAllBytes("C:/Users/bsmith2021/Exports/ShoePicture ("+ System.DateTime.Now + ").png", bytes);
+        System.IO.File.WriteAllBytes("C:/Users/bsmith2021/Exports/ShoePicture.png", bytes);
+    }
+    Texture2D toTexture2D(RenderTexture rTex)
+    {
+        Texture2D tex = new Texture2D(4096, 4096, TextureFormat.RGB24, false);
+        RenderTexture.active = rTex;
+        tex.ReadPixels(new Rect(0, 0, rTex.width, rTex.height), 0, 0);
+        tex.Apply();
+        Destroy(tex);//prevents memory leak
+        return tex;
+    }
     public void ToPainting()
     {
         introduction.SetActive(false);
@@ -108,6 +123,7 @@ public class GameManager : MonoBehaviour
         introduction.SetActive(false);
         ending.SetActive(false);
         StartCoroutine(WaitToStart());
+        
     }
 
     public void ToIntroduction()
@@ -141,9 +157,15 @@ public class GameManager : MonoBehaviour
             spawner.RespawnObject();
         }
         //spawn shoes
+        StartCoroutine(TakePhoto());
 
 
+    }
 
+    IEnumerator TakePhoto()
+    {
+        yield return new WaitForSeconds(1f);
+        SaveTexture();
     }
 
     private void Update()
