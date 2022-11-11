@@ -24,6 +24,8 @@ public class QueuedObjectSpawner : MonoBehaviour
 
     HoopController hoopController;
 
+    bool isSpawning = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -39,40 +41,46 @@ public class QueuedObjectSpawner : MonoBehaviour
         hoopController = FindObjectOfType<HoopController>();
     }
 
+    public void StartSpawning()
+    {
+        isSpawning = true;
+    }
     // Update is called once per frame
     void Update()
     {
-        if(funnyMode)
+        if(isSpawning)
         {
-            Instantiate(objectPrefab, transform.position, Quaternion.identity);
-        }
-        else
-        {
-            timeSinceLastSpawn += Time.deltaTime;
-            if (objCount == 0)
+            if(funnyMode)
             {
-                
-                if(timeSinceLastSpawn > spawnCooldown)
+                Instantiate(objectPrefab, transform.position, Quaternion.identity);
+            }
+            else
+            {
+                timeSinceLastSpawn += Time.deltaTime;
+                if (objCount == 0)
                 {
-                    timeSinceLastSpawn = 0f;
-                    GameObject newObject = Instantiate(objectPrefab, transform.position, Quaternion.identity);
-                    newObject.transform.parent = gameObject.transform.root;
-                    if(randomiseColors)
+                    
+                    if(timeSinceLastSpawn > spawnCooldown)
                     {
-                        Color newObjectColor = GetNewColor();
-                        newObject.GetComponentInChildren<MeshRenderer>().material.SetColor("_BaseColor", newObjectColor);
-                        if(newObject.GetComponentInChildren<ParticleSystemRenderer>() != null)
+                        timeSinceLastSpawn = 0f;
+                        GameObject newObject = Instantiate(objectPrefab, transform.position, Quaternion.identity);
+                        newObject.transform.parent = gameObject.transform.root;
+                        if(randomiseColors)
                         {
-                            newObject.GetComponentInChildren<ParticleSystemRenderer>().material.SetColor("_BaseColor", newObjectColor);
+                            Color newObjectColor = GetNewColor();
+                            newObject.GetComponentInChildren<MeshRenderer>().material.SetColor("_BaseColor", newObjectColor);
+                            if(newObject.GetComponentInChildren<ParticleSystemRenderer>() != null)
+                            {
+                                newObject.GetComponentInChildren<ParticleSystemRenderer>().material.SetColor("_BaseColor", newObjectColor);
+                            }
+                            newObject.GetComponent<InteractableObjectExtentions>().LinkSpawner(this);
                         }
-                        newObject.GetComponent<InteractableObjectExtentions>().LinkSpawner(this);
                     }
+                    
+                    
                 }
-                
-                
             }
         }
-
     }
     Color GetNewColor()
     {
